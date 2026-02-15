@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -66,12 +65,6 @@ export function Navbar() {
             </Button>
           </Link>
 
-          <Link href="/auth">
-            <Button className="hidden sm:flex bg-primary text-primary-foreground hover:bg-primary/90">
-              Get Started
-            </Button>
-          </Link>
-
           {/* Mobile Menu Toggle */}
           <button 
             className="md:hidden"
@@ -93,9 +86,6 @@ export function Navbar() {
           <div className="flex flex-col space-y-2">
             <Link href="/auth" onClick={() => setIsMenuOpen(false)}>
               <Button variant="outline" className="w-full border-primary text-primary">Login</Button>
-            </Link>
-            <Link href="/auth" onClick={() => setIsMenuOpen(false)}>
-              <Button className="w-full bg-primary text-primary-foreground">Get Started</Button>
             </Link>
           </div>
         </div>
