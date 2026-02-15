@@ -89,23 +89,23 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 bg-background">
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4 bg-background" suppressHydrationWarning>
       <div className="w-full max-w-[450px] animate-in fade-in zoom-in duration-500">
         {successMessage && (
-          <Alert className="mb-6 bg-primary/10 border-primary text-primary">
+          <Alert className="mb-6 bg-primary/10 border-primary text-primary" suppressHydrationWarning>
             <CheckCircle2 className="h-4 w-4" />
             <AlertTitle>Success</AlertTitle>
             <AlertDescription>{successMessage}</AlertDescription>
           </Alert>
         )}
 
-        <Tabs defaultValue="login" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 h-12">
-            <TabsTrigger value="login" className="text-sm font-bold">Login</TabsTrigger>
-            <TabsTrigger value="signup" className="text-sm font-bold">Signup</TabsTrigger>
+        <Tabs defaultValue="login" className="w-full" suppressHydrationWarning>
+          <TabsList className="grid w-full grid-cols-2 mb-8 h-12" suppressHydrationWarning>
+            <TabsTrigger value="login" className="text-sm font-bold" suppressHydrationWarning>Login</TabsTrigger>
+            <TabsTrigger value="signup" className="text-sm font-bold" suppressHydrationWarning>Signup</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="login">
+          <TabsContent value="login" suppressHydrationWarning>
             <Card className="border-white/10 shadow-2xl glass-card">
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Welcome Back</CardTitle>
@@ -151,6 +151,7 @@ export default function AuthPage() {
                                 type="button"
                                 onClick={() => setShowLoginPassword(!showLoginPassword)}
                                 className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                                suppressHydrationWarning
                               >
                                 {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </button>
@@ -165,6 +166,7 @@ export default function AuthPage() {
                         type="button" 
                         onClick={handleForgotPassword}
                         className="text-xs text-secondary hover:underline font-medium"
+                        suppressHydrationWarning
                       >
                         Forgot Password?
                       </button>
@@ -181,7 +183,7 @@ export default function AuthPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="signup">
+          <TabsContent value="signup" suppressHydrationWarning>
             <Card className="border-white/10 shadow-2xl glass-card">
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Create Account</CardTitle>
@@ -243,6 +245,7 @@ export default function AuthPage() {
                                 type="button"
                                 onClick={() => setShowSignupPassword(!showSignupPassword)}
                                 className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                                suppressHydrationWarning
                               >
                                 {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </button>
@@ -271,6 +274,7 @@ export default function AuthPage() {
                                 type="button"
                                 onClick={() => setShowSignupConfirmPassword(!showSignupConfirmPassword)}
                                 className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                                suppressHydrationWarning
                               >
                                 {showSignupConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                               </button>
