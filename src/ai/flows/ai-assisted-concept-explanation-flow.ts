@@ -10,19 +10,19 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const AIConceptExplanationInputSchema = z.object({
-  conceptDescription: z.string().describe('A description of the concept the student is struggling with.'),
-});
-export type AIConceptExplanationInput = z.infer<typeof AIConceptExplanationInputSchema>;
-
 const SuggestedMaterialSchema = z.object({
   type: z.enum(['Notes', 'Important Questions', 'PYQ', 'Mock Test', 'Formula Sheet', 'Practice Worksheet', 'Sample Paper', 'MCQ']).describe('The type of study material.'),
   title: z.string().describe('The title or name of the study material.'),
   url: z.string().url().describe('A mock URL to access the study material.'),
 });
 
+const AIConceptExplanationInputSchema = z.object({
+  conceptDescription: z.string().describe('A description of the concept the student is struggling with.'),
+});
+export type AIConceptExplanationInput = z.infer<typeof AIConceptExplanationInputSchema>;
+
 const AIConceptExplanationOutputSchema = z.object({
-  explanation: z.string().describe('A concise explanation of the concept, derived from the platform\\'s content.'),
+  explanation: z.string().describe("A concise explanation of the concept, derived from the platform's content."),
   suggestedMaterials: z.array(SuggestedMaterialSchema).describe('A list of study materials relevant to the concept.'),
 });
 export type AIConceptExplanationOutput = z.infer<typeof AIConceptExplanationOutputSchema>;
@@ -50,12 +50,12 @@ const searchStudyMaterials = ai.defineTool(
   },
   async (input) => {
     const searchKeywords = input.concept.toLowerCase().split(/\s+/);
-    const results: z.infer<typeof SuggestedMaterialSchema>[] = [];
+    const results: any[] = [];
 
     mockStudyMaterials.forEach(material => {
       const materialKeywords = material.keywords.map(kw => kw.toLowerCase());
       if (searchKeywords.some(sk => materialKeywords.includes(sk) || material.title.toLowerCase().includes(sk))) {
-        results.push({ type: material.type as z.infer<typeof SuggestedMaterialSchema>['type'], title: material.title, url: material.url });
+        results.push({ type: material.type, title: material.title, url: material.url });
       }
     });
     return results;
@@ -69,11 +69,11 @@ const conceptExplanationPrompt = ai.definePrompt({
   tools: [searchStudyMaterials],
   prompt: `You are an AI study guide. Your task is to help students understand difficult concepts.
 
-First, provide a concise and clear explanation of the concept described by the student. This explanation should be easy to understand and accurate, as if it\'s derived from the best study notes.
+First, provide a concise and clear explanation of the concept described by the student. This explanation should be easy to understand and accurate, as if it's derived from the best study notes.
 
 Second, use the 'searchStudyMaterials' tool to find and suggest relevant study materials (like notes, important questions, or PYQs) that could further help the student understand the concept. List these suggested materials clearly.
 
-Student\'s concept description: {{{conceptDescription}}}`,
+Student's concept description: {{{conceptDescription}}}`,
 });
 
 export async function aiAssistedConceptExplanation(input: AIConceptExplanationInput): Promise<AIConceptExplanationOutput> {
