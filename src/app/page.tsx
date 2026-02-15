@@ -20,37 +20,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
   AccordionTrigger,
+  AccordionContent,
 } from "@/components/ui/accordion";
 
 export default function Home() {
   const classes = [
     { name: "Class 9", icon: <BookOpen />, color: "text-blue-500", href: "/study/class-9" },
-    { 
-      name: "Class 10", 
-      icon: <Award />, 
-      color: "text-green-500", 
-      href: "/study/class-10",
-      options: [
-        { name: "PYQ", href: "/study/class-10/pyq" },
-        { name: "NCERT Notes", href: "/study/class-10/ncert-notes" },
-        { name: "Short Notes", href: "/study/class-10/short-notes" }
-      ]
-    },
+    { name: "Class 10", icon: <Award />, color: "text-green-500", href: "/study/class-10" },
     { name: "Class 11", icon: <TrendingUp />, color: "text-purple-500", href: "/study/class-11" },
-    { 
-      name: "Class 12", 
-      icon: <ShieldCheck />, 
-      color: "text-orange-500", 
-      href: "/study/class-12",
-      options: [
-        { name: "PYQ", href: "/study/class-12/pyq" },
-        { name: "NCERT Notes", href: "/study/class-12/ncert-notes" },
-        { name: "Short Notes", href: "/study/class-12/short-notes" }
-      ]
-    },
+    { name: "Class 12", icon: <ShieldCheck />, color: "text-orange-500", href: "/study/class-12" },
   ];
 
   const seniorSubjects = [
@@ -187,30 +167,12 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {classes.map((cls) => (
             <Card key={cls.name} className="hover:border-primary transition-all duration-300 group overflow-hidden bg-card/50 flex flex-col h-full">
-              <Link href={cls.href} className="flex flex-row items-center space-x-4 p-6 border-b border-white/5 hover:bg-white/5 transition-colors">
+              <Link href={cls.href} className="flex flex-row items-center space-x-4 p-6 hover:bg-white/5 transition-colors h-full">
                 <div className={`p-3 rounded-xl bg-white/5 group-hover:bg-primary/10 transition-colors ${cls.color}`}>
                   {cls.icon}
                 </div>
                 <CardTitle className="text-xl">{cls.name}</CardTitle>
               </Link>
-              {cls.options ? (
-                <div className="p-4 bg-background/20 flex flex-col gap-1 mt-auto">
-                  {cls.options.map((opt) => (
-                    <Link 
-                      key={opt.name} 
-                      href={opt.href}
-                      className="text-xs font-semibold py-2 px-3 rounded-lg hover:bg-primary/10 hover:text-primary transition-all flex items-center justify-between group/opt"
-                    >
-                      <span>{opt.name}</span>
-                      <ArrowRight className="w-3 h-3 opacity-0 group-hover/opt:opacity-100 transition-opacity" />
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-6 mt-auto text-sm text-muted-foreground italic">
-                  Complete resources coming soon...
-                </div>
-              )}
             </Card>
           ))}
         </div>
