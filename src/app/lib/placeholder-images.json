@@ -1,0 +1,35 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Abstract educational background with patterns",
+      "imageUrl": "https://picsum.photos/seed/edu1/1200/600",
+      "imageHint": "education abstract"
+    },
+    {
+      "id": "science-notes",
+      "description": "Science laboratory equipment and notes",
+      "imageUrl": "https://picsum.photos/seed/science/400/300",
+      "imageHint": "science laboratory"
+    },
+    {
+      "id": "math-notes",
+      "description": "Mathematical formulas and calculations",
+      "imageUrl": "https://picsum.photos/seed/math/400/300",
+      "imageHint": "math equations"
+    },
+    {
+      "id": "jee-prep",
+      "description": "Competitive exam preparation books",
+      "imageUrl": "https://picsum.photos/seed/jee/400/300",
+      "imageHint": "books study"
+    },
+    {
+      "id": "neet-prep",
+      "description": "Biology and medical study materials",
+      "imageUrl": "https://picsum.photos/seed/neet/400/300",
+      "imageHint": "biology medical"
+    }
+  ]
+}
