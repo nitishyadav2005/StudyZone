@@ -39,13 +39,13 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="text-foreground/70">
+          <Button variant="ghost" size="icon" className="text-foreground/70" suppressHydrationWarning>
             <Search className="w-5 h-5" />
           </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
+              <Button variant="ghost" size="icon" className="hidden sm:flex" suppressHydrationWarning>
                 <User className="w-5 h-5" />
               </Button>
             </DropdownMenuTrigger>
@@ -58,17 +58,18 @@ export function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href="/auth">
-            <Button variant="outline" className="hidden sm:flex border-primary text-primary hover:bg-primary/10">
+          <Button variant="outline" className="hidden sm:flex border-primary text-primary hover:bg-primary/10" asChild suppressHydrationWarning>
+            <Link href="/auth">
               <LogIn className="mr-2 h-4 w-4" />
               Login
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           {/* Mobile Menu Toggle */}
           <button 
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            suppressHydrationWarning
           >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
@@ -84,9 +85,9 @@ export function Navbar() {
           <Link href="/exams/neet" className="text-lg font-medium">NEET Prep</Link>
           <Link href="/ai-guide" className="text-lg font-medium text-secondary">AI Guide</Link>
           <div className="flex flex-col space-y-2">
-            <Link href="/auth" onClick={() => setIsMenuOpen(false)}>
-              <Button variant="outline" className="w-full border-primary text-primary">Login</Button>
-            </Link>
+            <Button variant="outline" className="w-full border-primary text-primary" asChild suppressHydrationWarning>
+              <Link href="/auth" onClick={() => setIsMenuOpen(false)}>Login</Link>
+            </Button>
           </div>
         </div>
       )}
