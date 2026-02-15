@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, BookOpen, User, Menu, X, Sparkles, LogIn } from "lucide-react";
+import { Search, BookOpen, User, Menu, X, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -32,10 +32,6 @@ export function Navbar() {
           <Link href="/study/class-12" className="hover:text-primary transition-colors">Class 12</Link>
           <Link href="/exams/jee" className="hover:text-primary transition-colors">JEE Prep</Link>
           <Link href="/exams/neet" className="hover:text-primary transition-colors">NEET Prep</Link>
-          <Link href="/ai-guide" className="flex items-center space-x-1 text-secondary hover:text-secondary/80 transition-colors">
-            <Sparkles className="w-4 h-4" />
-            <span>AI Guide</span>
-          </Link>
         </nav>
 
         <div className="flex items-center space-x-4">
@@ -83,7 +79,6 @@ export function Navbar() {
           <Link href="/study/class-12" className="text-lg font-medium">Class 12</Link>
           <Link href="/exams/jee" className="text-lg font-medium">JEE Prep</Link>
           <Link href="/exams/neet" className="text-lg font-medium">NEET Prep</Link>
-          <Link href="/ai-guide" className="text-lg font-medium text-secondary">AI Guide</Link>
           <div className="flex flex-col space-y-2">
             <Button variant="outline" className="w-full border-primary text-primary" asChild suppressHydrationWarning>
               <Link href="/auth" onClick={() => setIsMenuOpen(false)}>Login</Link>

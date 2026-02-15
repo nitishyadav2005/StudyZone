@@ -1,6 +1,5 @@
-
 import Link from "next/link";
-import { BookOpen, FlaskConical, Globe, Calculator, ArrowLeft, Languages } from "lucide-react";
+import { FlaskConical, Globe, Calculator, ArrowLeft, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -44,20 +43,6 @@ export default function ClassStudyPage({ params }: { params: { class: string } }
           </Link>
         ))}
       </div>
-
-      <section className="mt-20 rounded-3xl bg-secondary/5 border border-secondary/10 p-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-4">
-            <h3 className="text-2xl font-bold font-headline">Need a quick revision?</h3>
-            <p className="text-muted-foreground max-w-md">Our AI Study Guide can summarize chapters and find the most important topics for you instantly.</p>
-          </div>
-          <Link href="/ai-guide">
-            <Button className="bg-secondary text-secondary-foreground font-bold px-8 h-12">
-              Open AI Guide
-            </Button>
-          </Link>
-        </div>
-      </section>
     </div>
   );
 }

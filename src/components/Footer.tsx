@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { BookOpen, Github, Twitter, Instagram } from "lucide-react";
 
@@ -33,7 +32,6 @@ export function Footer() {
             <h4 className="font-bold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/dashboard" className="hover:text-primary transition-colors">User Dashboard</Link></li>
-              <li><Link href="/ai-guide" className="hover:text-primary transition-colors">AI Study Guide</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Practice Tests</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Solved PYQs</Link></li>
             </ul>

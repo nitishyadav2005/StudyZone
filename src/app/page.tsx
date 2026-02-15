@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import { 
@@ -9,14 +8,10 @@ import {
   Award, 
   ArrowRight,
   TrendingUp,
-  ShieldCheck,
-  FlaskConical,
-  Calculator,
-  Dna,
-  Atom
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
@@ -46,11 +41,6 @@ export default function Home() {
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8">
                 Explore Notes
               </Button>
-              <Link href="/ai-guide">
-                <Button size="lg" variant="outline" className="border-secondary text-secondary hover:bg-secondary/10 px-8">
-                  Try AI Guide
-                </Button>
-              </Link>
             </div>
             <div className="flex items-center space-x-8 pt-8 text-sm font-medium text-muted-foreground">
               <div className="flex items-center space-x-2">
