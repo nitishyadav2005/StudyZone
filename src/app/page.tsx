@@ -9,11 +9,21 @@ import {
   Award, 
   ArrowRight,
   TrendingUp,
-  ShieldCheck
+  ShieldCheck,
+  FlaskConical,
+  Calculator,
+  Dna,
+  Atom
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export default function Home() {
   const classes = [
@@ -41,6 +51,13 @@ export default function Home() {
         { name: "Short Notes", href: "/study/class-12/short-notes" }
       ]
     },
+  ];
+
+  const seniorSubjects = [
+    { name: "Physics", icon: <Atom className="w-4 h-4" /> },
+    { name: "Chemistry", icon: <FlaskConical className="w-4 h-4" /> },
+    { name: "Mathematics", icon: <Calculator className="w-4 h-4" /> },
+    { name: "Biology", icon: <Dna className="w-4 h-4" /> },
   ];
 
   return (
@@ -96,10 +113,73 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Interactive Class Subject Selection */}
+      <section className="container mx-auto px-4 max-w-3xl">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold font-headline mb-4">Quick Subject Access</h2>
+          <p className="text-muted-foreground italic">Select your class to see available subjects</p>
+        </div>
+        <Accordion type="single" collapsible className="w-full space-y-4">
+          <AccordionItem value="class-11" className="border-none bg-card rounded-xl overflow-hidden shadow-lg">
+            <AccordionTrigger className="px-6 py-6 hover:no-underline group">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-lg bg-purple-500/10 text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <span className="text-2xl font-bold font-headline">Class 11</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+                {seniorSubjects.map((sub) => (
+                  <Link 
+                    key={sub.name} 
+                    href={`/study/class-11/${sub.name.toLowerCase()}`}
+                    className="flex flex-col items-center justify-center p-4 rounded-xl bg-background/50 hover:bg-primary/10 border border-white/5 hover:border-primary transition-all group/sub"
+                  >
+                    <div className="mb-2 p-2 rounded-full bg-white/5 group-hover/sub:scale-110 transition-transform">
+                      {sub.icon}
+                    </div>
+                    <span className="text-sm font-bold">{sub.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="class-12" className="border-none bg-card rounded-xl overflow-hidden shadow-lg">
+            <AccordionTrigger className="px-6 py-6 hover:no-underline group">
+              <div className="flex items-center space-x-4">
+                <div className="p-3 rounded-lg bg-orange-500/10 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <span className="text-2xl font-bold font-headline">Class 12</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-6 pb-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2">
+                {seniorSubjects.map((sub) => (
+                  <Link 
+                    key={sub.name} 
+                    href={`/study/class-12/${sub.name.toLowerCase()}`}
+                    className="flex flex-col items-center justify-center p-4 rounded-xl bg-background/50 hover:bg-primary/10 border border-white/5 hover:border-primary transition-all group/sub"
+                  >
+                    <div className="mb-2 p-2 rounded-full bg-white/5 group-hover/sub:scale-110 transition-transform">
+                      {sub.icon}
+                    </div>
+                    <span className="text-sm font-bold">{sub.name}</span>
+                  </Link>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
       {/* Class Quick Links */}
       <section className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold font-headline">Select Your Class</h2>
+          <h2 className="text-3xl font-bold font-headline">All Classes</h2>
           <Link href="/study" className="text-primary text-sm font-bold flex items-center hover:underline">
             View All <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
