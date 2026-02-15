@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, BookOpen, User, Menu, X, Sparkles } from "lucide-react";
+import { Search, BookOpen, User, Menu, X, Sparkles, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -59,6 +59,11 @@ export function Navbar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <Button variant="outline" className="hidden sm:flex border-primary text-primary hover:bg-primary/10">
+            <LogIn className="mr-2 h-4 w-4" />
+            Login
+          </Button>
+
           <Button className="hidden sm:flex bg-primary text-primary-foreground hover:bg-primary/90">
             Get Started
           </Button>
@@ -81,7 +86,10 @@ export function Navbar() {
           <Link href="/exams/jee" className="text-lg font-medium">JEE Prep</Link>
           <Link href="/exams/neet" className="text-lg font-medium">NEET Prep</Link>
           <Link href="/ai-guide" className="text-lg font-medium text-secondary">AI Guide</Link>
-          <Button className="w-full bg-primary text-primary-foreground">Get Started</Button>
+          <div className="flex flex-col space-y-2">
+            <Button variant="outline" className="w-full border-primary text-primary">Login</Button>
+            <Button className="w-full bg-primary text-primary-foreground">Get Started</Button>
+          </div>
         </div>
       )}
     </header>
