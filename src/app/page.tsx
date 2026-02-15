@@ -23,13 +23,6 @@ export default function Home() {
     { name: "Class 12", icon: <ShieldCheck />, color: "text-orange-500", href: "/study/class-12" },
   ];
 
-  const trendingTopics = [
-    { title: "Photosynthesis Explained", category: "Class 10 Science", type: "Notes", badge: "Hot" },
-    { title: "JEE Math: Integration PYQs", category: "Competitive", type: "PYQ", badge: "Trending" },
-    { title: "NEET Bio: Human Anatomy", category: "Competitive", type: "Notes", badge: "New" },
-    { title: "Quadratic Equations", category: "Class 9 Math", type: "Questions", badge: "Updated" },
-  ];
-
   return (
     <div className="flex flex-col gap-16 pb-20">
       {/* Hero Section */}
@@ -49,9 +42,11 @@ export default function Home() {
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8">
                 Explore Notes
               </Button>
-              <Button size="lg" variant="outline" className="border-secondary text-secondary hover:bg-secondary/10 px-8">
-                Try AI Guide
-              </Button>
+              <Link href="/ai-guide">
+                <Button size="lg" variant="outline" className="border-secondary text-secondary hover:bg-secondary/10 px-8">
+                  Try AI Guide
+                </Button>
+              </Link>
             </div>
             <div className="flex items-center space-x-8 pt-8 text-sm font-medium text-muted-foreground">
               <div className="flex items-center space-x-2">
@@ -192,33 +187,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Trending Topics */}
-      <section className="container mx-auto px-4 mb-20">
-        <div className="flex items-center space-x-3 mb-8">
-          <TrendingUp className="text-primary w-6 h-6" />
-          <h2 className="text-3xl font-bold font-headline">Trending Materials</h2>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trendingTopics.map((topic, i) => (
-            <Card key={i} className="bg-card hover:bg-white/5 transition-colors cursor-pointer group">
-              <CardContent className="p-6 space-y-4">
-                <div className="flex justify-between items-start">
-                  <Badge className="bg-primary/20 text-primary border-none">{topic.badge}</Badge>
-                  <span className="text-xs text-muted-foreground">{topic.type}</span>
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg group-hover:text-primary transition-colors">{topic.title}</h3>
-                  <p className="text-sm text-muted-foreground">{topic.category}</p>
-                </div>
-                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/10">
-                  Read More
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
     </div>
