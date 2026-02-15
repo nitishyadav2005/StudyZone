@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -31,7 +30,7 @@ import {
   FormMessage 
 } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2, Lock, Mail, User, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 
 const loginSchema = z.object({
@@ -51,6 +50,9 @@ const signupSchema = z.object({
 
 export default function AuthPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
 
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -139,7 +141,19 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input type="password" placeholder="••••••••" className="pl-10" {...field} />
+                              <Input 
+                                type={showLoginPassword ? "text" : "password"} 
+                                placeholder="••••••••" 
+                                className="pl-10 pr-10" 
+                                {...field} 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -219,7 +233,19 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input type="password" placeholder="••••••••" className="pl-10" {...field} />
+                              <Input 
+                                type={showSignupPassword ? "text" : "password"} 
+                                placeholder="••••••••" 
+                                className="pl-10 pr-10" 
+                                {...field} 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignupPassword(!showSignupPassword)}
+                                className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -235,7 +261,19 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <ShieldCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input type="password" placeholder="••••••••" className="pl-10" {...field} />
+                              <Input 
+                                type={showSignupConfirmPassword ? "text" : "password"} 
+                                placeholder="••••••••" 
+                                className="pl-10 pr-10" 
+                                {...field} 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignupConfirmPassword(!showSignupConfirmPassword)}
+                                className="absolute right-3 top-3 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {showSignupConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
