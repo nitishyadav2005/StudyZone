@@ -1,0 +1,737 @@
+{
+  "entities": {
+    "UserProfile": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserProfile",
+      "type": "object",
+      "description": "Represents a user's profile within the EduVault application, storing personal preferences and progress.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserProfile entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address, used for identification (assuming authentication is handled externally).",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's chosen display name."
+        },
+        "currentClassId": {
+          "type": "string",
+          "description": "Reference to the Class entity representing the user's currently selected or enrolled class for personalized content. (Relationship: Class 1:N UserProfile)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user profile was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user profile was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "displayName",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Class": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Class",
+      "type": "object",
+      "description": "Represents an academic class level, such as Class 9, Class 10, etc.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Class entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the class (e.g., 'Class 9', 'Class 12')."
+        },
+        "gradeLevel": {
+          "type": "number",
+          "description": "The numerical grade level of the class (e.g., 9, 10, 11, 12)."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "gradeLevel"
+      ]
+    },
+    "Subject": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Subject",
+      "type": "object",
+      "description": "Represents an academic subject taught within a specific class.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Subject entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the subject (e.g., 'Science', 'Mathematics', 'Physics')."
+        },
+        "classId": {
+          "type": "string",
+          "description": "Reference to the Class entity this subject belongs to. (Relationship: Class 1:N Subject)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "classId"
+      ]
+    },
+    "Chapter": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Chapter",
+      "type": "object",
+      "description": "Represents a specific chapter or topic within a subject.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Chapter entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the chapter (e.g., 'Chemical Reactions and Equations')."
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Reference to the Subject entity this chapter belongs to. (Relationship: Subject 1:N Chapter)"
+        },
+        "classId": {
+          "type": "string",
+          "description": "Reference to the Class entity this chapter indirectly belongs to (via Subject). (Relationship: Class 1:N Chapter)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "subjectId",
+        "classId"
+      ]
+    },
+    "StudyMaterial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "StudyMaterial",
+      "type": "object",
+      "description": "Represents general study materials like NCERT notes, important questions, PYQs, and sample papers for CBSE classes.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the StudyMaterial entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the study material (e.g., 'Chapter 1 Notes: Science', 'Class 10 PYQs')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the study material."
+        },
+        "materialType": {
+          "type": "string",
+          "description": "The type of study material.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fileUrl": {
+          "type": "string",
+          "description": "URL to the downloadable PDF or resource file.",
+          "format": "uri"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "URL to a thumbnail image for displaying the material in a card-based layout.",
+          "format": "uri"
+        },
+        "classId": {
+          "type": "string",
+          "description": "Reference to the Class entity this material is primarily for. (Relationship: Class 1:N StudyMaterial)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Reference to the Subject entity this material belongs to. (Relationship: Subject 1:N StudyMaterial)"
+        },
+        "chapterId": {
+          "type": "string",
+          "description": "Optional reference to the Chapter entity this material covers, if chapter-specific. (Relationship: Chapter 1:N StudyMaterial)"
+        },
+        "publishedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the material was published.",
+          "format": "date-time"
+        },
+        "lastUpdatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the material was last updated.",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "description": "An array of keywords or tags for search and categorization (e.g., 'CBSE', 'PDF', 'Science').",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "materialType",
+        "fileUrl",
+        "classId",
+        "subjectId",
+        "publishedAt",
+        "lastUpdatedAt"
+      ]
+    },
+    "CompetitiveExam": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CompetitiveExam",
+      "type": "object",
+      "description": "Represents competitive examinations like JEE or NEET.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CompetitiveExam entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the competitive exam (e.g., 'JEE Main + Advanced', 'NEET UG')."
+        },
+        "shortName": {
+          "type": "string",
+          "description": "A shorter, common name or acronym for the exam (e.g., 'JEE', 'NEET')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the competitive exam."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "shortName",
+        "description"
+      ]
+    },
+    "CompetitiveExamMaterial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CompetitiveExamMaterial",
+      "type": "object",
+      "description": "Represents study materials specifically for competitive exams like JEE and NEET, including notes, PYQs, formula sheets, and mock tests.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CompetitiveExamMaterial entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the competitive exam material (e.g., 'JEE Physics PYQs 2013-2023')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of the competitive exam material."
+        },
+        "materialType": {
+          "type": "string",
+          "description": "The type of competitive exam material.",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fileUrl": {
+          "type": "string",
+          "description": "URL to the downloadable PDF or resource file.",
+          "format": "uri"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "URL to a thumbnail image for displaying the material in a card-based layout.",
+          "format": "uri"
+        },
+        "competitiveExamId": {
+          "type": "string",
+          "description": "Reference to the CompetitiveExam entity this material is for. (Relationship: CompetitiveExam 1:N CompetitiveExamMaterial)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Optional reference to the Subject entity this material is for, if subject-specific. (Relationship: Subject 1:N CompetitiveExamMaterial)"
+        },
+        "chapterId": {
+          "type": "string",
+          "description": "Optional reference to the Chapter entity this material covers, if chapter-specific. (Relationship: Chapter 1:N CompetitiveExamMaterial)"
+        },
+        "publishedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the material was published.",
+          "format": "date-time"
+        },
+        "lastUpdatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the material was last updated.",
+          "format": "date-time"
+        },
+        "tags": {
+          "type": "array",
+          "description": "An array of keywords or tags for search and categorization (e.g., 'JEE', 'Physics', 'Mock Test').",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "materialType",
+        "fileUrl",
+        "competitiveExamId",
+        "publishedAt",
+        "lastUpdatedAt"
+      ]
+    },
+    "Quiz": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Quiz",
+      "type": "object",
+      "description": "Represents an interactive quiz with a set of questions.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Quiz entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the quiz (e.g., 'Chapter 1 Science Quiz')."
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description or instructions for the quiz."
+        },
+        "durationMinutes": {
+          "type": "number",
+          "description": "The recommended duration for completing the quiz in minutes."
+        },
+        "totalQuestions": {
+          "type": "number",
+          "description": "The total number of questions included in the quiz."
+        },
+        "classId": {
+          "type": "string",
+          "description": "Optional reference to the Class entity this quiz is relevant to. (Relationship: Class 1:N Quiz)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Optional reference to the Subject entity this quiz is relevant to. (Relationship: Subject 1:N Quiz)"
+        },
+        "chapterId": {
+          "type": "string",
+          "description": "Optional reference to the Chapter entity this quiz is based on. (Relationship: Chapter 1:N Quiz)"
+        },
+        "competitiveExamId": {
+          "type": "string",
+          "description": "Optional reference to the CompetitiveExam entity this quiz is for. (Relationship: CompetitiveExam 1:N Quiz)"
+        },
+        "difficultyLevel": {
+          "type": "string",
+          "description": "The perceived difficulty level of the quiz (e.g., 'Easy', 'Medium', 'Hard').",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the quiz was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the quiz was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "durationMinutes",
+        "totalQuestions",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Question": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Question",
+      "type": "object",
+      "description": "Represents an individual question, typically part of a quiz or an interactive question bank.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Question entity."
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the Quiz entity this question belongs to. (Relationship: Quiz 1:N Question)"
+        },
+        "questionText": {
+          "type": "string",
+          "description": "The full text of the question."
+        },
+        "options": {
+          "type": "array",
+          "description": "An array of possible answer options for multiple-choice questions.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "correctOptionIndex": {
+          "type": "number",
+          "description": "The 0-based index of the correct option in the 'options' array for multiple-choice questions."
+        },
+        "answerExplanation": {
+          "type": "string",
+          "description": "A detailed explanation for the correct answer."
+        },
+        "questionType": {
+          "type": "string",
+          "description": "The type of question (e.g., 'MCQ', 'Short Answer', 'Long Answer').",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional URL to an image associated with the question.",
+          "format": "uri"
+        },
+        "difficultyLevel": {
+          "type": "string",
+          "description": "The perceived difficulty level of the question (e.g., 'Easy', 'Medium', 'Hard').",
+          "format": "enum",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "questionText",
+        "answerExplanation",
+        "questionType"
+      ]
+    },
+    "UserSavedMaterial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserSavedMaterial",
+      "type": "object",
+      "description": "Represents a user's saved study material or competitive exam material for quick access.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserSavedMaterial entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile entity who saved the material. (Relationship: UserProfile 1:N UserSavedMaterial)"
+        },
+        "studyMaterialId": {
+          "type": "string",
+          "description": "Optional reference to a StudyMaterial entity, if the saved material is a general study resource. (Relationship: StudyMaterial 1:N UserSavedMaterial) *Either this or `competitiveExamMaterialId` should be present.*"
+        },
+        "competitiveExamMaterialId": {
+          "type": "string",
+          "description": "Optional reference to a CompetitiveExamMaterial entity, if the saved material is for competitive exams. (Relationship: CompetitiveExamMaterial 1:N UserSavedMaterial) *Either this or `studyMaterialId` should be present.*"
+        },
+        "savedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the material was saved by the user.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "savedAt"
+      ]
+    },
+    "UserQuizAttempt": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserQuizAttempt",
+      "type": "object",
+      "description": "Records a user's attempt at a specific quiz, including their score and answers.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserQuizAttempt entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the UserProfile entity who attempted the quiz. (Relationship: UserProfile 1:N UserQuizAttempt)"
+        },
+        "quizId": {
+          "type": "string",
+          "description": "Reference to the Quiz entity that was attempted. (Relationship: Quiz 1:N UserQuizAttempt)"
+        },
+        "startedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user started the quiz attempt.",
+          "format": "date-time"
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Timestamp indicating when the user submitted the quiz attempt.",
+          "format": "date-time"
+        },
+        "score": {
+          "type": "number",
+          "description": "The raw score obtained by the user for this quiz attempt."
+        },
+        "totalCorrectQuestions": {
+          "type": "number",
+          "description": "The total number of questions answered correctly in this attempt."
+        },
+        "totalQuestions": {
+          "type": "number",
+          "description": "The total number of questions in the quiz during this attempt."
+        },
+        "selectedOptions": {
+          "type": "array",
+          "description": "An ordered array of numbers, where each number represents the 0-based index of the option chosen by the user for the corresponding question in the quiz.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "quizId",
+        "startedAt",
+        "submittedAt",
+        "score",
+        "totalCorrectQuestions",
+        "totalQuestions",
+        "selectedOptions"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "UserProfile",
+          "schema": {
+            "$ref": "#/backend/entities/UserProfile"
+          },
+          "description": "Stores individual user profiles. The document ID `{userId}` corresponds to Firebase Authentication's UID. Access is restricted to the owning user. Includes denormalized 'id' matching the document ID for authorization independence.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user, matching Firebase Authentication UID."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/classes/{classId}",
+        "definition": {
+          "entityName": "Class",
+          "schema": {
+            "$ref": "#/backend/entities/Class"
+          },
+          "description": "Contains definitions for academic class levels (e.g., Class 9, Class 10). This is a public, read-only collection for all users, enabling easy navigation and filtering of related content.",
+          "params": [
+            {
+              "name": "classId",
+              "description": "The unique identifier for an academic class."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/subjects/{subjectId}",
+        "definition": {
+          "entityName": "Subject",
+          "schema": {
+            "$ref": "#/backend/entities/Subject"
+          },
+          "description": "Defines academic subjects (e.g., Science, Mathematics). Documents include `classId` for direct filtering and linking, supporting QAPs. This is a public, read-only collection for all users.",
+          "params": [
+            {
+              "name": "subjectId",
+              "description": "The unique identifier for an academic subject."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/chapters/{chapterId}",
+        "definition": {
+          "entityName": "Chapter",
+          "schema": {
+            "$ref": "#/backend/entities/Chapter"
+          },
+          "description": "Lists individual chapters or topics. Documents include `classId` and `subjectId` for direct filtering and navigation, supporting QAPs. This is a public, read-only collection for all users.",
+          "params": [
+            {
+              "name": "chapterId",
+              "description": "The unique identifier for a chapter within a subject."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/studyMaterials/{studyMaterialId}",
+        "definition": {
+          "entityName": "StudyMaterial",
+          "schema": {
+            "$ref": "#/backend/entities/StudyMaterial"
+          },
+          "description": "Stores general study materials like notes, important questions, and sample papers. Includes `classId`, `subjectId`, and optional `chapterId` for denormalized authorization and efficient querying (QAPs). This collection is publicly readable.",
+          "params": [
+            {
+              "name": "studyMaterialId",
+              "description": "The unique identifier for a study material document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/competitiveExams/{competitiveExamId}",
+        "definition": {
+          "entityName": "CompetitiveExam",
+          "schema": {
+            "$ref": "#/backend/entities/CompetitiveExam"
+          },
+          "description": "Contains definitions for competitive examinations (e.g., JEE, NEET). This is a public, read-only collection for all users, enabling navigation to related materials.",
+          "params": [
+            {
+              "name": "competitiveExamId",
+              "description": "The unique identifier for a competitive examination."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/competitiveExamMaterials/{competitiveExamMaterialId}",
+        "definition": {
+          "entityName": "CompetitiveExamMaterial",
+          "schema": {
+            "$ref": "#/backend/entities/CompetitiveExamMaterial"
+          },
+          "description": "Stores study materials specifically for competitive exams. Includes `competitiveExamId`, optional `subjectId`, and `chapterId` for denormalized authorization and efficient querying (QAPs). This collection is publicly readable.",
+          "params": [
+            {
+              "name": "competitiveExamMaterialId",
+              "description": "The unique identifier for a competitive exam material document."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}",
+        "definition": {
+          "entityName": "Quiz",
+          "schema": {
+            "$ref": "#/backend/entities/Quiz"
+          },
+          "description": "Represents interactive quizzes. Includes optional `classId`, `subjectId`, `chapterId`, and `competitiveExamId` for denormalized authorization and efficient querying (QAPs). This collection is publicly readable.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "The unique identifier for a quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/quizzes/{quizId}/questions/{questionId}",
+        "definition": {
+          "entityName": "Question",
+          "schema": {
+            "$ref": "#/backend/entities/Question"
+          },
+          "description": "Contains individual questions belonging to a specific quiz. Access is dependent on the parent `quizId`, implying public read access when the parent quiz is public. `quizId` is denormalized in the document itself for authorization independence.",
+          "params": [
+            {
+              "name": "quizId",
+              "description": "The unique identifier of the parent quiz."
+            },
+            {
+              "name": "questionId",
+              "description": "The unique identifier for a question within a quiz."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/savedMaterials/{userSavedMaterialId}",
+        "definition": {
+          "entityName": "UserSavedMaterial",
+          "schema": {
+            "$ref": "#/backend/entities/UserSavedMaterial"
+          },
+          "description": "Stores materials saved by a specific user. The `userId` in the path ensures authorization independence and restricts access to the owning user (`request.auth.uid`). `userId` is also denormalized within the document to simplify rules. Supports QAPs as users can only query their own saved items.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who saved the material."
+            },
+            {
+              "name": "userSavedMaterialId",
+              "description": "The unique identifier for a user's saved material entry."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/quizAttempts/{userQuizAttemptId}",
+        "definition": {
+          "entityName": "UserQuizAttempt",
+          "schema": {
+            "$ref": "#/backend/entities/UserQuizAttempt"
+          },
+          "description": "Records a user's attempt at a quiz. The `userId` in the path ensures authorization independence and restricts access to the owning user (`request.auth.uid`). `userId` and `quizId` are also denormalized within the document to simplify rules. Supports QAPs as users can only query their own quiz attempts.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who attempted the quiz."
+            },
+            {
+              "name": "userQuizAttemptId",
+              "description": "The unique identifier for a user's quiz attempt."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The proposed Firestore structure prioritizes secure, scalable, and debuggable authorization by adhering to the core design principles. \n\n**Authorization Independence via Denormalization:**\nFor publicly accessible content like `StudyMaterial`, `CompetitiveExamMaterial`, and `Quiz`, critical relationship IDs such as `classId`, `subjectId`, `chapterId`, and `competitiveExamId` are denormalized and stored directly within each document. For instance, a `StudyMaterial` document will contain its `classId` and `subjectId`. This design eliminates the need for expensive and complex `get()` calls in Firestore security rules to check parent document attributes for authorization decisions. Consequently, atomic operations (like creating a new material) are simplified, and security rules become direct checks against document fields rather than indirect lookups.\n\nFor user-specific, private data such as `UserProfile`, `UserSavedMaterial`, and `UserQuizAttempt`, Authorization Independence is achieved through **path-based ownership**. The user's unique ID (`request.auth.uid`) is embedded directly into the collection path (e.g., `/users/{userId}/savedMaterials/{savedMaterialId}`). This ensures that `request.auth.uid` can be directly compared against the `{userId}` wildcard in the path, providing a simple, atomic, and secure authorization mechanism without any `get()` operations.\n\n**Support for Queryable Access Patterns (QAPs):**\n1.  **Public Content (e.g., Study Materials, Quizzes):** Collections like `/studyMaterials`, `/competitiveExamMaterials`, and `/quizzes` are designed as top-level collections, containing all necessary foreign keys (`classId`, `subjectId`, etc.) within each document. This structural segregation ensures that all documents within these collections share a homogeneous security posture (publicly readable). This enables efficient and secure `list` queries from the client, such as 'get all study materials for Class 10, Subject Science'. The security rules can permit `read` access for authenticated users (or all users) directly on the collection, without needing to filter results client-side or perform complex `get()` checks for each document. The denormalized fields allow Firestore's native query capabilities to filter data effectively at the database level, ensuring that rules are not acting as filters.\n2.  **Private User Content (e.g., Saved Materials, Quiz Attempts):** For user-owned data, the `/users/{userId}/...` hierarchical path directly supports QAPs. A user can only query their own subcollections (e.g., `/users/myUserId/savedMaterials`), and the rules will automatically restrict access to only documents under their `userId` path. This ensures that users can list and manage their personal content securely and efficiently, as the path itself acts as the primary authorization boundary."
+  }
+}

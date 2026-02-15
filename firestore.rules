@@ -1,0 +1,188 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * EduVault Security Rules
+     *
+     * CORE PHILOSOPHY:
+     * This ruleset enforces a strict user-ownership model for personal data while maintaining 
+     * a public, read-only posture for academic content. It prioritizes "Authorization 
+     * Independence" by utilizing path-based wildcards and denormalized fields.
+     *
+     * DATA STRUCTURE:
+     * - Public Content: /classes, /subjects, /chapters, /studyMaterials, /competitiveExams, /quizzes.
+     * - Private User Content: All user data is strictly nested under /users/{userId}.
+     *
+     * KEY SECURITY DECISIONS:
+     * - User Scoping: Users can only read, write, or list data within their own /users/{userId} tree.
+     * - Read-Only Collections: Academic structures (Classes, Subjects, etc.) are public for reading 
+     *   but protected from all client-side write operations.
+     * - Prototyping Flexibility: Rules enforce WHO can write data (authorization) and 
+     *   crucial relational links (integrity), but do not restrict the specific fields or 
+     *   data types of the content itself.
+     *
+     * DENORMALIZATION FOR AUTHORIZATION:
+     * - To avoid expensive get() calls, userId and relationship IDs (like quizId) are 
+     *   expected to be denormalized directly into the documents.
+     * - User-specific documents validate that internal fields (e.g., userId) match the 
+     *   authenticated user's UID and the collection path.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the request is from an authenticated user. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user matches the provided userId. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** @description Checks if the user is the owner and the document exists (for updates/deletes). */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /** @description Validates that an ID field remains immutable during updates. */
+    function isFieldImmutable(fieldName) {
+      return request.resource.data[fieldName] == resource.data[fieldName];
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for the UserProfile entity. Restricts access to the profile owner.
+     * @path /users/{userId}
+     * @allow (get) request.auth.uid == "user_123" on /users/user_123
+     * @deny (list) any user attempting to list all profiles.
+     * @principle Path-based ownership and relational integrity for the 'id' field.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Users cannot list other users
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && isFieldImmutable('id');
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Rules for materials saved by a specific user.
+       * @path /users/{userId}/savedMaterials/{userSavedMaterialId}
+       * @allow (create) User saving a resource to their own subcollection.
+       * @deny (read) User A trying to read User B's saved materials.
+       * @principle Restricts access to a user's own data tree.
+       */
+      match /savedMaterials/{userSavedMaterialId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId) && isFieldImmutable('userId');
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Records of user quiz attempts.
+       * @path /users/{userId}/quizAttempts/{userQuizAttemptId}
+       * @allow (list) User viewing their own attempt history.
+       * @deny (update) Attempting to modify a score after submission (Logic: updates blocked for simplicity).
+       * @principle Enforces path-based ownership for private activity records.
+       */
+      match /quizAttempts/{userQuizAttemptId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if false; // Quiz attempts are typically immutable once submitted
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description Publicly readable academic structure.
+     * @path /classes/{classId}
+     * @allow (get, list) Any user browsing available classes.
+     * @deny (create, update, delete) Any client-side write attempt.
+     * @principle Read-only public access for shared metadata.
+     */
+    match /classes/{classId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Publicly readable academic subjects.
+     * @path /subjects/{subjectId}
+     * @allow (list) Fetching all subjects for a class.
+     * @deny (write) Any modification by users.
+     * @principle Read-only public access.
+     */
+    match /subjects/{subjectId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Publicly readable chapters.
+     * @path /chapters/{chapterId}
+     * @allow (get) Viewing details of a specific chapter.
+     * @principle Read-only public access.
+     */
+    match /chapters/{chapterId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Study materials collection.
+     * @path /studyMaterials/{studyMaterialId}
+     * @allow (get, list) All users can view and search study materials.
+     * @principle Read-only public access.
+     */
+    match /studyMaterials/{studyMaterialId} {
+      allow get, list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'StudyMaterial' entity is missing an 'ownerId' or 'authorId' field.
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Competitive exam definitions.
+     * @path /competitiveExams/{competitiveExamId}
+     * @principle Read-only public access.
+     */
+    match /competitiveExams/{competitiveExamId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Materials for competitive exams.
+     * @path /competitiveExamMaterials/{competitiveExamMaterialId}
+     * @principle Read-only public access.
+     */
+    match /competitiveExamMaterials/{competitiveExamMaterialId} {
+      allow get, list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'CompetitiveExamMaterial' entity is missing an 'ownerId' or 'authorId' field.
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Quizzes available to students.
+     * @path /quizzes/{quizId}
+     * @principle Read-only public access for the quiz container.
+     */
+    match /quizzes/{quizId} {
+      allow get, list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Quiz' entity is missing an 'ownerId' or 'authorId' field.
+      allow create, update, delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+
+      /**
+       * @description Questions belonging to a specific quiz.
+       * @path /quizzes/{quizId}/questions/{questionId}
+       * @principle Inherits public read-only posture from parent Quiz.
+       */
+      match /questions/{questionId} {
+        allow get, list: if true;
+        allow create, update, delete: if false;
+      }
+    }
+  }
+}
