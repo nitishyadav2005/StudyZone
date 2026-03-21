@@ -89,7 +89,7 @@ export default function AuthPage() {
     setSuccessMessage("Login attempted. Redirecting...");
   }
 
-  function onSignupSubmit(values: z.infer<typeof signupSchema>) {
+  function handleSignupSubmit(values: z.infer<typeof signupSchema>) {
     if (!auth) return;
     initiateEmailSignUp(auth, values.email, values.password);
     setSuccessMessage("Account creation attempted. Redirecting...");
@@ -129,7 +129,7 @@ export default function AuthPage() {
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Admin Login</CardTitle>
                 <CardDescription className="text-center">
-                  Use your credentials to access the admin features.
+                  Enter your email and password to access admin features.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -144,7 +144,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="admin@2005.com" className="pl-10" {...field} suppressHydrationWarning />
+                              <Input placeholder="admin@example.com" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -162,7 +162,7 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showLoginPassword ? "text" : "password"} 
-                                placeholder="Admin@2005" 
+                                placeholder="••••••••" 
                                 className="pl-10 pr-10" 
                                 {...field} 
                                 suppressHydrationWarning
@@ -205,12 +205,12 @@ export default function AuthPage() {
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Create Admin Account</CardTitle>
                 <CardDescription className="text-center">
-                  Register with email <strong>admin@2005.com</strong> to start managing study materials.
+                  Register to start managing study materials across the platform.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...signupForm}>
-                  <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
+                  <form onSubmit={signupForm.handleSubmit(handleSignupSubmit)} className="space-y-4">
                     <FormField
                       control={signupForm.control}
                       name="fullName"
@@ -220,7 +220,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="Admin User" className="pl-10" {...field} suppressHydrationWarning />
+                              <Input placeholder="John Doe" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -236,7 +236,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="admin@2005.com" className="pl-10" {...field} suppressHydrationWarning />
+                              <Input placeholder="admin@example.com" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -254,7 +254,7 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showSignupPassword ? "text" : "password"} 
-                                placeholder="Admin@2005" 
+                                placeholder="••••••••" 
                                 className="pl-10 pr-10" 
                                 {...field} 
                                 suppressHydrationWarning
@@ -284,7 +284,7 @@ export default function AuthPage() {
                               <ShieldCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showSignupConfirmPassword ? "text" : "password"} 
-                                placeholder="Admin@2005" 
+                                placeholder="••••••••" 
                                 className="pl-10 pr-10" 
                                 {...field} 
                                 suppressHydrationWarning
@@ -304,7 +304,7 @@ export default function AuthPage() {
                       )}
                     />
                     <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2" suppressHydrationWarning>
-                      Create Admin Account
+                      Create Account
                     </Button>
                   </form>
                 </Form>
