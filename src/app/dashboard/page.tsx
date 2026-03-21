@@ -1,43 +1,70 @@
+"use client";
 
 import { 
   Bookmark, 
   Clock, 
-  BarChart2, 
-  Settings, 
-  CheckCircle2, 
-  FileText, 
-  ArrowUpRight 
+  ArrowUpRight,
+  FileText,
+  CheckCircle2,
+  Settings,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push("/auth");
+    }
+  }, [user, isUserLoading, router]);
+
   const recentActivities = [
     { title: "Photosynthesis Notes", status: "Read 2h ago", icon: <FileText className="text-blue-500" /> },
     { title: "Math Quiz: Algebra", status: "Score: 85%", icon: <CheckCircle2 className="text-green-500" /> },
     { title: "JEE Physics PYQ 2022", status: "Saved", icon: <Bookmark className="text-orange-500" /> },
   ];
 
+  if (isUserLoading) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  const userInitials = user.displayName 
+    ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase() 
+    : "AD";
+
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12" suppressHydrationWarning>
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
         <div className="flex items-center space-x-4">
           <Avatar className="w-16 h-16 border-2 border-primary">
-            <AvatarImage src="https://picsum.photos/seed/user/100/100" />
-            <AvatarFallback>ST</AvatarFallback>
+            <AvatarImage src={user.photoURL || `https://picsum.photos/seed/${user.uid}/100/100`} />
+            <AvatarFallback>{userInitials}</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="text-3xl font-bold font-headline">Welcome back, Student!</h1>
+            <h1 className="text-3xl font-bold font-headline">Welcome back, {user.displayName || 'Admin'}!</h1>
             <p className="text-muted-foreground">Keep up the great progress in your Class 10 preparation.</p>
           </div>
         </div>
         <div className="flex space-x-2">
-          <Button variant="outline" className="bg-card">
+          <Button variant="outline" className="bg-card" suppressHydrationWarning>
             <Settings className="mr-2 w-4 h-4" /> Settings
           </Button>
-          <Button className="bg-primary text-primary-foreground font-bold">
+          <Button className="bg-primary text-primary-foreground font-bold" suppressHydrationWarning>
             Resume Learning
           </Button>
         </div>
@@ -60,7 +87,7 @@ export default function DashboardPage() {
             </Card>
             <Card className="bg-card border-none">
               <CardHeader className="p-4 pb-0">
-                <CardDescription className="text-xs font-bold uppercase">Notes Saved</CardTitle>
+                <CardDescription className="text-xs font-bold uppercase">Notes Saved</CardDescription>
                 <CardTitle className="text-2xl font-bold">18</CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-2 text-xs text-muted-foreground">
@@ -81,7 +108,7 @@ export default function DashboardPage() {
           <Card className="bg-card border-none">
             <CardHeader>
               <CardTitle>Subject Progress</CardTitle>
-              <CardDescription>Overall completion of the Class 10 syllabus.</CardDescription>
+              <CardDescription>Overall completion of the syllabus.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -140,7 +167,7 @@ export default function DashboardPage() {
               <CardDescription className="text-primary-foreground/80">Generate personalized mock tests based on your weak areas.</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="secondary" className="w-full font-bold">
+              <Button variant="secondary" className="w-full font-bold" suppressHydrationWarning>
                 Try Now
               </Button>
             </CardContent>

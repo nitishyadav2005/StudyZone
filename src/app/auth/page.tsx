@@ -103,8 +103,6 @@ export default function AuthPage() {
           title: "Login Failed",
           description: error.message || "Invalid credentials.",
         });
-      })
-      .finally(() => {
         setIsSubmitting(false);
       });
   }
@@ -115,9 +113,9 @@ export default function AuthPage() {
     setSuccessMessage(null);
 
     createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         if (userCredential.user) {
-          updateProfile(userCredential.user, {
+          await updateProfile(userCredential.user, {
             displayName: values.fullName
           });
         }
@@ -133,8 +131,6 @@ export default function AuthPage() {
           title: "Signup Failed",
           description: error.message || "An error occurred during registration.",
         });
-      })
-      .finally(() => {
         setIsSubmitting(false);
       });
   }
