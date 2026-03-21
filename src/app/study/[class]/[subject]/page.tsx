@@ -26,19 +26,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFirestore, useCollection, useMemoFirebase, setDocumentNonBlocking } from "@/firebase";
-import { collection, query, where, serverTimestamp, doc } from "firebase/firestore";
+import { collection, query, where, doc } from "firebase/firestore";
 
 export default function SubjectDetailPage() {
   const params = useParams();
-  const classSlug = params.class as string;
-  const subjectSlug = params.subject as string;
+  const classSlug = params?.class as string;
+  const subjectSlug = params?.subject as string;
   
   const { firestore } = useFirestore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: "", url: "", description: "" });
 
   const materialsQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || !classSlug || !subjectSlug) return null;
     return query(
       collection(firestore, "studyMaterials"),
       where("classId", "==", classSlug),
@@ -48,7 +48,9 @@ export default function SubjectDetailPage() {
 
   const { data: materials, isLoading } = useCollection(materialsQuery);
 
-  const handleAddMaterial = () => {
+  const handleAddMaterial = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    
     if (!firestore || !newMaterial.title || !newMaterial.url) return;
 
     const materialsCol = collection(firestore, "studyMaterials");
@@ -71,8 +73,8 @@ export default function SubjectDetailPage() {
     setIsDialogOpen(false);
   };
 
-  const subjectName = subjectSlug.charAt(0).toUpperCase() + subjectSlug.slice(1);
-  const className = classSlug.replace("-", " ").toUpperCase();
+  const subjectName = subjectSlug ? subjectSlug.charAt(0).toUpperCase() + subjectSlug.slice(1) : "";
+  const className = classSlug ? classSlug.replace("-", " ").toUpperCase() : "";
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -101,44 +103,49 @@ export default function SubjectDetailPage() {
                 Enter the details of the PDF or resource. For now, provide a direct URL to the file.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input 
-                  id="title" 
-                  placeholder="e.g., Chapter 1: Calculus Notes" 
-                  value={newMaterial.title}
-                  onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
-                  suppressHydrationWarning
-                />
+            <form onSubmit={handleAddMaterial}>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input 
+                    id="title" 
+                    placeholder="e.g., Chapter 1: Calculus Notes" 
+                    value={newMaterial.title}
+                    onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
+                    required
+                    suppressHydrationWarning
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="url">File URL (PDF Link)</Label>
+                  <Input 
+                    id="url" 
+                    type="url"
+                    placeholder="https://example.com/file.pdf" 
+                    value={newMaterial.url}
+                    onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
+                    required
+                    suppressHydrationWarning
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="description">Brief Description</Label>
+                  <Input 
+                    id="description" 
+                    placeholder="Short summary of the content..." 
+                    value={newMaterial.description}
+                    onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
+                    suppressHydrationWarning
+                  />
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="url">File URL (PDF Link)</Label>
-                <Input 
-                  id="url" 
-                  placeholder="https://example.com/file.pdf" 
-                  value={newMaterial.url}
-                  onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
-                  suppressHydrationWarning
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Brief Description</Label>
-                <Input 
-                  id="description" 
-                  placeholder="Short summary of the content..." 
-                  value={newMaterial.description}
-                  onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
-                  suppressHydrationWarning
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)} suppressHydrationWarning>Cancel</Button>
-              <Button onClick={handleAddMaterial} disabled={!newMaterial.title || !newMaterial.url} suppressHydrationWarning>
-                Save Material
-              </Button>
-            </DialogFooter>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} suppressHydrationWarning>Cancel</Button>
+                <Button type="submit" disabled={!newMaterial.title || !newMaterial.url} suppressHydrationWarning>
+                  Save Material
+                </Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
       </div>

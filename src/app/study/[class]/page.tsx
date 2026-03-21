@@ -3,8 +3,9 @@ import { FlaskConical, Globe, Calculator, ArrowLeft, Languages } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-export default function ClassStudyPage({ params }: { params: { class: string } }) {
-  const className = params.class.replace("-", " ").toUpperCase();
+export default async function ClassStudyPage({ params }: { params: Promise<{ class: string }> }) {
+  const { class: classParam } = await params;
+  const className = classParam.replace("-", " ").toUpperCase();
   
   const subjects = [
     { name: "Science", icon: <FlaskConical className="w-6 h-6" />, count: "14 Chapters", color: "text-green-500", slug: "science" },
@@ -28,7 +29,7 @@ export default function ClassStudyPage({ params }: { params: { class: string } }
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {subjects.map((subject) => (
-          <Link key={subject.slug} href={`/study/${params.class}/${subject.slug}`}>
+          <Link key={subject.slug} href={`/study/${classParam}/${subject.slug}`}>
             <Card className="hover:border-primary transition-all duration-300 group overflow-hidden h-full bg-card">
               <CardHeader className="p-8 space-y-4">
                 <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors ${subject.color}`}>
