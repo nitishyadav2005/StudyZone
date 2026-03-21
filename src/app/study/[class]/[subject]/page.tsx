@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFirestore, useCollection, useUser, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
+import { useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
 import { collection, query, where, serverTimestamp } from "firebase/firestore";
 
 export default function SubjectDetailPage() {
@@ -34,7 +34,6 @@ export default function SubjectDetailPage() {
   const subjectSlug = params.subject as string;
   
   const { firestore } = useFirestore();
-  const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: "", url: "", description: "" });
 
@@ -87,58 +86,59 @@ export default function SubjectDetailPage() {
           <p className="text-muted-foreground">Access and manage all study resources for this subject.</p>
         </div>
 
-        {user && (
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-primary text-primary-foreground font-bold" suppressHydrationWarning>
-                <Plus className="mr-2 h-4 w-4" /> Add Material
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Add New Study Material</DialogTitle>
-                <DialogDescription>
-                  Enter the details of the PDF or resource. For now, provide a direct URL to the file.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input 
-                    id="title" 
-                    placeholder="e.g., Chapter 1: Calculus Notes" 
-                    value={newMaterial.title}
-                    onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="url">File URL (PDF Link)</Label>
-                  <Input 
-                    id="url" 
-                    placeholder="https://example.com/file.pdf" 
-                    value={newMaterial.url}
-                    onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="description">Brief Description</Label>
-                  <Input 
-                    id="description" 
-                    placeholder="Short summary of the content..." 
-                    value={newMaterial.description}
-                    onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
-                  />
-                </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary text-primary-foreground font-bold" suppressHydrationWarning>
+              <Plus className="mr-2 h-4 w-4" /> Add Material
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Study Material</DialogTitle>
+              <DialogDescription>
+                Enter the details of the PDF or resource. For now, provide a direct URL to the file.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="title">Title</Label>
+                <Input 
+                  id="title" 
+                  placeholder="e.g., Chapter 1: Calculus Notes" 
+                  value={newMaterial.title}
+                  onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
+                  suppressHydrationWarning
+                />
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)} suppressHydrationWarning>Cancel</Button>
-                <Button onClick={handleAddMaterial} disabled={!newMaterial.title || !newMaterial.url} suppressHydrationWarning>
-                  Save Material
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
+              <div className="grid gap-2">
+                <Label htmlFor="url">File URL (PDF Link)</Label>
+                <Input 
+                  id="url" 
+                  placeholder="https://example.com/file.pdf" 
+                  value={newMaterial.url}
+                  onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
+                  suppressHydrationWarning
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="description">Brief Description</Label>
+                <Input 
+                  id="description" 
+                  placeholder="Short summary of the content..." 
+                  value={newMaterial.description}
+                  onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
+                  suppressHydrationWarning
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)} suppressHydrationWarning>Cancel</Button>
+              <Button onClick={handleAddMaterial} disabled={!newMaterial.title || !newMaterial.url} suppressHydrationWarning>
+                Save Material
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {isLoading ? (
@@ -187,13 +187,8 @@ export default function SubjectDetailPage() {
           <h3 className="text-xl font-bold mb-2">No materials found</h3>
           <p className="text-muted-foreground max-w-sm mx-auto mb-8">
             There are currently no study materials for {subjectName} in {className}.
-            {user ? " Click 'Add Material' to upload your first PDF." : " Sign in to add resources."}
+            Click 'Add Material' to upload your first PDF.
           </p>
-          {!user && (
-            <Button asChild className="bg-primary text-primary-foreground font-bold" suppressHydrationWarning>
-              <Link href="/auth">Sign In to Add Material</Link>
-            </Button>
-          )}
         </div>
       )}
     </div>

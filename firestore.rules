@@ -70,9 +70,8 @@ service cloud.firestore {
 
     match /studyMaterials/{studyMaterialId} {
       allow get, list: if true;
-      // Prototyping: Allow authenticated users to add materials. 
-      // In production, you would restrict this to admin users.
-      allow create: if isSignedIn();
+      // Prototyping: Allow anyone to add materials for now.
+      allow create: if true;
       allow update, delete: if false; 
     }
 
@@ -83,7 +82,8 @@ service cloud.firestore {
 
     match /competitiveExamMaterials/{competitiveExamMaterialId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
+      // Prototyping: Allow anyone to add materials for now.
+      allow create: if true;
       allow update, delete: if false;
     }
 
