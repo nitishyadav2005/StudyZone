@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,17 +30,19 @@ import {
   FormMessage 
 } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth, useUser, initiateEmailSignIn, initiateEmailSignUp } from "@/firebase";
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 const signupSchema = z.object({
   fullName: z.string().min(2, "Full Name is required"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -49,15 +51,25 @@ const signupSchema = z.object({
 });
 
 export default function AuthPage() {
+  const router = useRouter();
+  const { auth } = useAuth();
+  const { user, isUserLoading } = useUser();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && !isUserLoading) {
+      router.push("/dashboard");
+    }
+  }, [user, isUserLoading, router]);
+
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -66,26 +78,34 @@ export default function AuthPage() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       fullName: "",
-      username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
   function onLoginSubmit(values: z.infer<typeof loginSchema>) {
-    console.log("Login Attempt:", values);
-    setSuccessMessage("Login Successful! Redirecting...");
-    setTimeout(() => setSuccessMessage(null), 3000);
+    if (!auth) return;
+    initiateEmailSignIn(auth, values.email, values.password);
+    setSuccessMessage("Login attempted. Redirecting...");
   }
 
   function onSignupSubmit(values: z.infer<typeof signupSchema>) {
-    console.log("Signup Attempt:", values);
-    setSuccessMessage("Account Created Successfully! You can now login.");
-    setTimeout(() => setSuccessMessage(null), 3000);
+    if (!auth) return;
+    initiateEmailSignUp(auth, values.email, values.password);
+    setSuccessMessage("Account creation attempted. Redirecting...");
   }
 
   function handleForgotPassword() {
     alert("Password reset functionality placeholder popup triggered.");
+  }
+
+  if (isUserLoading) {
+    return (
+      <div className="min-h-[calc(100vh-64px)] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
   }
 
   return (
@@ -110,7 +130,7 @@ export default function AuthPage() {
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Welcome Back</CardTitle>
                 <CardDescription className="text-center">
-                  Enter your credentials to access your EduVault account.
+                  Enter your admin credentials to access EduVault.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -118,14 +138,14 @@ export default function AuthPage() {
                   <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                     <FormField
                       control={loginForm.control}
-                      name="username"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="Enter username" className="pl-10" {...field} />
+                              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                              <Input placeholder="admin@eduvault.com" className="pl-10" {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -177,18 +197,15 @@ export default function AuthPage() {
                   </form>
                 </Form>
               </CardContent>
-              <CardFooter className="flex flex-col text-center text-sm text-muted-foreground">
-                <p>Don't have an account? <span className="text-primary font-bold cursor-pointer">Switch to Signup</span></p>
-              </CardFooter>
             </Card>
           </TabsContent>
 
           <TabsContent value="signup" suppressHydrationWarning>
             <Card className="border-white/10 shadow-2xl glass-card">
               <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl text-center font-headline">Create Account</CardTitle>
+                <CardTitle className="text-2xl text-center font-headline">Create Admin Account</CardTitle>
                 <CardDescription className="text-center">
-                  Join EduVault today and start your learning journey.
+                  Register to start managing study materials.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -203,7 +220,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="John Doe" className="pl-10" {...field} />
+                              <Input placeholder="Admin User" className="pl-10" {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -212,14 +229,14 @@ export default function AuthPage() {
                     />
                     <FormField
                       control={signupForm.control}
-                      name="username"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Username</FormLabel>
+                          <FormLabel>Email</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="johndoe123" className="pl-10" {...field} />
+                              <Input placeholder="admin@example.com" className="pl-10" {...field} />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -285,14 +302,11 @@ export default function AuthPage() {
                       )}
                     />
                     <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2">
-                      Create Account
+                      Create Admin Account
                     </Button>
                   </form>
                 </Form>
               </CardContent>
-              <CardFooter className="text-center text-sm text-muted-foreground">
-                <p className="w-full">By signing up, you agree to our <Link href="#" className="underline">Terms of Service</Link></p>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
