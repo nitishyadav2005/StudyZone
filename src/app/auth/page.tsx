@@ -30,7 +30,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth, useUser, initiateEmailSignIn, initiateEmailSignUp } from "@/firebase";
+import { useAuth, useUser } from "@/firebase";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
@@ -89,19 +90,23 @@ export default function AuthPage() {
     setIsSubmitting(true);
     setSuccessMessage(null);
     
-    try {
-      // initiateEmailSignIn is a non-blocking helper that triggers Auth state change
-      initiateEmailSignIn(auth, values.email, values.password);
-      setSuccessMessage("Login initiated. You will be redirected shortly.");
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: error.message || "An unexpected error occurred during login.",
+    signInWithEmailAndPassword(auth, values.email, values.password)
+      .then(() => {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back! Redirecting to dashboard...",
+        });
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: error.message || "Invalid credentials.",
+        });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
-    } finally {
-      setIsSubmitting(false);
-    }
   }
 
   async function handleSignupSubmit(values: z.infer<typeof signupSchema>) {
@@ -109,18 +114,29 @@ export default function AuthPage() {
     setIsSubmitting(true);
     setSuccessMessage(null);
 
-    try {
-      initiateEmailSignUp(auth, values.email, values.password);
-      setSuccessMessage("Account creation initiated. You will be redirected shortly.");
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Signup Failed",
-        description: error.message || "An unexpected error occurred during signup.",
+    createUserWithEmailAndPassword(auth, values.email, values.password)
+      .then((userCredential) => {
+        if (userCredential.user) {
+          updateProfile(userCredential.user, {
+            displayName: values.fullName
+          });
+        }
+        toast({
+          title: "Account Created Successfully",
+          description: "Your admin account is ready. Welcome to EduVault!",
+        });
+        setSuccessMessage("Account created! Redirecting...");
+      })
+      .catch((error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Signup Failed",
+          description: error.message || "An error occurred during registration.",
+        });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
-    } finally {
-      setIsSubmitting(false);
-    }
   }
 
   function handleForgotPassword() {
@@ -144,7 +160,7 @@ export default function AuthPage() {
         {successMessage && (
           <Alert className="mb-6 bg-primary/10 border-primary text-primary" suppressHydrationWarning>
             <CheckCircle2 className="h-4 w-4" />
-            <AlertTitle>Action Initiated</AlertTitle>
+            <AlertTitle>Authenticated</AlertTitle>
             <AlertDescription>{successMessage}</AlertDescription>
           </Alert>
         )}

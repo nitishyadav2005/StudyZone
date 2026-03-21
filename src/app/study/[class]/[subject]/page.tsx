@@ -26,8 +26,10 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFirestore, useCollection, useMemoFirebase, setDocumentNonBlocking, useUser } from "@/firebase";
-import { collection, query, where, doc } from "firebase/firestore";
+import { useFirestore, useCollection, useMemoFirebase, useUser, errorEmitter } from "@/firebase";
+import { collection, query, where, doc, setDoc } from "firebase/firestore";
+import { FirestorePermissionError } from "@/firebase/errors";
+import { useToast } from "@/hooks/use-toast";
 
 export default function SubjectDetailPage() {
   const params = useParams();
@@ -36,7 +38,10 @@ export default function SubjectDetailPage() {
   
   const { firestore } = useFirestore();
   const { user, isUserLoading: isAuthLoading } = useUser();
+  const { toast } = useToast();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: "", url: "", description: "" });
 
   const materialsQuery = useMemoFirebase(() => {
@@ -55,6 +60,7 @@ export default function SubjectDetailPage() {
     
     if (!firestore || !newMaterial.title || !newMaterial.url) return;
 
+    setIsSaving(true);
     const materialsCol = collection(firestore, "studyMaterials");
     const newDocRef = doc(materialsCol);
 
@@ -70,9 +76,26 @@ export default function SubjectDetailPage() {
       lastUpdatedAt: new Date().toISOString(),
     };
 
-    setDocumentNonBlocking(newDocRef, materialData, { merge: true });
-    setNewMaterial({ title: "", url: "", description: "" });
-    setIsDialogOpen(false);
+    setDoc(newDocRef, materialData, { merge: true })
+      .then(() => {
+        toast({
+          title: "Material Added Successfully",
+          description: `${newMaterial.title} has been added to the library.`,
+        });
+        setNewMaterial({ title: "", url: "", description: "" });
+        setIsDialogOpen(false);
+      })
+      .catch((error: any) => {
+        const permissionError = new FirestorePermissionError({
+          path: newDocRef.path,
+          operation: 'create',
+          requestResourceData: materialData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
   };
 
   const subjectName = subjectSlug ? subjectSlug.charAt(0).toUpperCase() + subjectSlug.slice(1) : "";
@@ -144,8 +167,8 @@ export default function SubjectDetailPage() {
                 </div>
                 <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} suppressHydrationWarning>Cancel</Button>
-                  <Button type="submit" disabled={!newMaterial.title || !newMaterial.url} suppressHydrationWarning>
-                    Save Material
+                  <Button type="submit" disabled={isSaving || !newMaterial.title || !newMaterial.url} suppressHydrationWarning>
+                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Save Material"}
                   </Button>
                 </DialogFooter>
               </form>
