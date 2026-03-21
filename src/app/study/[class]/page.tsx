@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FlaskConical, Globe, Calculator, ArrowLeft, Languages } from "lucide-react";
+import { FlaskConical, Globe, Calculator, ArrowLeft, Languages, Beaker, Atom, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -7,7 +7,14 @@ export default async function ClassStudyPage({ params }: { params: Promise<{ cla
   const { class: classParam } = await params;
   const className = classParam.replace("-", " ").toUpperCase();
   
-  const subjects = [
+  const isHigherSecondary = classParam === "class-11" || classParam === "class-12";
+
+  const subjects = isHigherSecondary ? [
+    { name: "Physics", icon: <Atom className="w-6 h-6" />, count: "14 Chapters", color: "text-blue-400", slug: "physics" },
+    { name: "Chemistry", icon: <Beaker className="w-6 h-6" />, count: "12 Chapters", color: "text-orange-400", slug: "chemistry" },
+    { name: "Mathematics", icon: <Calculator className="w-6 h-6" />, count: "15 Chapters", color: "text-blue-500", slug: "maths" },
+    { name: "Biology", icon: <TreePine className="w-6 h-6" />, count: "20 Chapters", color: "text-green-500", slug: "biology" },
+  ] : [
     { name: "Science", icon: <FlaskConical className="w-6 h-6" />, count: "14 Chapters", color: "text-green-500", slug: "science" },
     { name: "Mathematics", icon: <Calculator className="w-6 h-6" />, count: "15 Chapters", color: "text-blue-500", slug: "maths" },
     { name: "Social Science", icon: <Globe className="w-6 h-6" />, count: "18 Chapters", color: "text-orange-500", slug: "social-science" },
@@ -17,7 +24,7 @@ export default async function ClassStudyPage({ params }: { params: Promise<{ cla
   return (
     <div className="container mx-auto px-4 py-12">
       <Link href="/">
-        <Button variant="ghost" size="sm" className="mb-8 hover:bg-white/5">
+        <Button variant="ghost" size="sm" className="mb-8 hover:bg-white/5" suppressHydrationWarning>
           <ArrowLeft className="mr-2 w-4 h-4" /> Back to Home
         </Button>
       </Link>
