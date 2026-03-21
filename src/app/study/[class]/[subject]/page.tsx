@@ -25,8 +25,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
-import { collection, query, where, serverTimestamp } from "firebase/firestore";
+import { useFirestore, useCollection, useMemoFirebase, setDocumentNonBlocking } from "@/firebase";
+import { collection, query, where, serverTimestamp, doc } from "firebase/firestore";
 
 export default function SubjectDetailPage() {
   const params = useParams();
@@ -37,7 +37,6 @@ export default function SubjectDetailPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newMaterial, setNewMaterial] = useState({ title: "", url: "", description: "" });
 
-  // Fetch materials for this specific class and subject
   const materialsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return query(
@@ -52,19 +51,22 @@ export default function SubjectDetailPage() {
   const handleAddMaterial = () => {
     if (!firestore || !newMaterial.title || !newMaterial.url) return;
 
+    const materialsCol = collection(firestore, "studyMaterials");
+    const newDocRef = doc(materialsCol);
+
     const materialData = {
+      id: newDocRef.id,
       title: newMaterial.title,
-      description: newMaterial.description,
+      description: newMaterial.description || "No description provided.",
       fileUrl: newMaterial.url,
-      materialType: "Notes", // Defaulting to Notes for now
+      materialType: "Notes",
       classId: classSlug,
       subjectId: subjectSlug,
       publishedAt: new Date().toISOString(),
       lastUpdatedAt: new Date().toISOString(),
-      createdAt: serverTimestamp(),
     };
 
-    addDocumentNonBlocking(collection(firestore, "studyMaterials"), materialData);
+    setDocumentNonBlocking(newDocRef, materialData, { merge: true });
     setNewMaterial({ title: "", url: "", description: "" });
     setIsDialogOpen(false);
   };
@@ -187,7 +189,7 @@ export default function SubjectDetailPage() {
           <h3 className="text-xl font-bold mb-2">No materials found</h3>
           <p className="text-muted-foreground max-w-sm mx-auto mb-8">
             There are currently no study materials for {subjectName} in {className}.
-            Click 'Add Material' to upload your first PDF.
+            Click 'Add Material' to upload your first PDF link.
           </p>
         </div>
       )}
