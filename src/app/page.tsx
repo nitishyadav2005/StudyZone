@@ -32,7 +32,7 @@ export default function Home() {
               Success Starts Here
             </Badge>
             <h1 className="text-5xl lg:text-7xl font-extrabold font-headline leading-tight tracking-tight">
-              Your Complete <span className="text-primary neon-glow">Study Hub</span> for <span className="text-secondary">CBSE, JEE & NEET</span>
+              Your Complete <span className="text-primary neon-glow">Study Zone</span> for <span className="text-secondary">CBSE, JEE & NEET</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl">
               Access the best-curated notes, solved previous year questions, and expert study materials designed to help you ace your exams.
@@ -59,7 +59,7 @@ export default function Home() {
             <div className="relative glass-card p-4 rounded-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
               <Image 
                 src="https://picsum.photos/seed/edu1/600/400" 
-                alt="EduVault Illustration" 
+                alt="Study Zone Illustration" 
                 width={600} 
                 height={400}
                 className="rounded-xl object-cover"

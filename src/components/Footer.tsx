@@ -11,7 +11,7 @@ export function Footer() {
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <BookOpen className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold font-headline tracking-tighter">EduVault</span>
+              <span className="text-xl font-bold font-headline tracking-tighter">Study Zone</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Empowering students with quality study materials for CBSE and competitive exams.
@@ -54,7 +54,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} EduVault. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Study Zone. All rights reserved.</p>
         </div>
       </div>
     </footer>

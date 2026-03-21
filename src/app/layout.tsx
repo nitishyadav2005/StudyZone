@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'EduVault | Your Study Companion',
+  title: 'Study Zone | Your Study Companion',
   description: 'The ultimate study resource for CBSE Classes 9-12, JEE, and NEET.',
 };
 

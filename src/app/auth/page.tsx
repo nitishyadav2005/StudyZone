@@ -137,7 +137,7 @@ export default function AuthPage() {
       }
       toast({
         title: "Account Created Successfully",
-        description: "Your admin account is ready. Welcome to EduVault!",
+        description: "Your admin account is ready. Welcome to Study Zone!",
       });
       setSuccessMessage("Account created! Redirecting...");
       router.push("/dashboard");

@@ -33,7 +33,7 @@ export function Navbar() {
             <BookOpen className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="text-xl font-bold font-headline tracking-tighter neon-glow" suppressHydrationWarning>
-            EduVault
+            Study Zone
           </span>
         </Link>
 
