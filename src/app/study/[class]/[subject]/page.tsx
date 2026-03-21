@@ -36,7 +36,7 @@ export default function SubjectDetailPage() {
   const classSlug = params?.class as string;
   const subjectSlug = params?.subject as string;
   
-  const { firestore } = useFirestore();
+  const firestore = useFirestore();
   const { user, isUserLoading: isAuthLoading } = useUser();
   const { toast } = useToast();
   

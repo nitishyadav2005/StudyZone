@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -52,7 +51,7 @@ const signupSchema = z.object({
 
 export default function AuthPage() {
   const router = useRouter();
-  const { auth } = useAuth();
+  const auth = useAuth();
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
   

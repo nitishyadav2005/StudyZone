@@ -17,7 +17,7 @@ import { signOut } from "firebase/auth";
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isUserLoading } = useUser();
-  const { auth } = useAuth();
+  const auth = useAuth();
 
   const handleLogout = async () => {
     if (auth) {
