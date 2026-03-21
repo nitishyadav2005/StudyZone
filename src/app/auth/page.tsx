@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Loader2 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser, initiateEmailSignIn, initiateEmailSignUp } from "@/firebase";
 
@@ -128,9 +127,9 @@ export default function AuthPage() {
           <TabsContent value="login" suppressHydrationWarning>
             <Card className="border-white/10 shadow-2xl glass-card">
               <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl text-center font-headline">Welcome Back</CardTitle>
+                <CardTitle className="text-2xl text-center font-headline">Admin Login</CardTitle>
                 <CardDescription className="text-center">
-                  Enter your admin credentials to access EduVault.
+                  Use your credentials to access the admin features.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -145,7 +144,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="admin@eduvault.com" className="pl-10" {...field} />
+                              <Input placeholder="admin@2005.com" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -163,9 +162,10 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showLoginPassword ? "text" : "password"} 
-                                placeholder="••••••••" 
+                                placeholder="Admin@2005" 
                                 className="pl-10 pr-10" 
                                 {...field} 
+                                suppressHydrationWarning
                               />
                               <button
                                 type="button"
@@ -191,7 +191,7 @@ export default function AuthPage() {
                         Forgot Password?
                       </button>
                     </div>
-                    <Button type="submit" className="w-full font-bold h-11 bg-primary text-primary-foreground">
+                    <Button type="submit" className="w-full font-bold h-11 bg-primary text-primary-foreground" suppressHydrationWarning>
                       Login
                     </Button>
                   </form>
@@ -205,7 +205,7 @@ export default function AuthPage() {
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl text-center font-headline">Create Admin Account</CardTitle>
                 <CardDescription className="text-center">
-                  Register to start managing study materials.
+                  Register with email <strong>admin@2005.com</strong> to start managing study materials.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -220,7 +220,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="Admin User" className="pl-10" {...field} />
+                              <Input placeholder="Admin User" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -236,7 +236,7 @@ export default function AuthPage() {
                           <FormControl>
                             <div className="relative">
                               <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                              <Input placeholder="admin@example.com" className="pl-10" {...field} />
+                              <Input placeholder="admin@2005.com" className="pl-10" {...field} suppressHydrationWarning />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -254,9 +254,10 @@ export default function AuthPage() {
                               <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showSignupPassword ? "text" : "password"} 
-                                placeholder="••••••••" 
+                                placeholder="Admin@2005" 
                                 className="pl-10 pr-10" 
                                 {...field} 
+                                suppressHydrationWarning
                               />
                               <button
                                 type="button"
@@ -283,9 +284,10 @@ export default function AuthPage() {
                               <ShieldCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                               <Input 
                                 type={showSignupConfirmPassword ? "text" : "password"} 
-                                placeholder="••••••••" 
+                                placeholder="Admin@2005" 
                                 className="pl-10 pr-10" 
                                 {...field} 
+                                suppressHydrationWarning
                               />
                               <button
                                 type="button"
@@ -301,7 +303,7 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2">
+                    <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2" suppressHydrationWarning>
                       Create Admin Account
                     </Button>
                   </form>
