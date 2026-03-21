@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -86,53 +87,69 @@ export default function AuthPage() {
   });
 
   async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
-    if (!auth) return;
+    if (!auth) {
+      toast({
+        variant: "destructive",
+        title: "Auth Error",
+        description: "Authentication service is not ready. Please try again in a moment.",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     setSuccessMessage(null);
     
-    signInWithEmailAndPassword(auth, values.email, values.password)
-      .then(() => {
-        toast({
-          title: "Login Successful",
-          description: "Welcome back! Redirecting to dashboard...",
-        });
-      })
-      .catch((error: any) => {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: error.message || "Invalid credentials.",
-        });
-        setIsSubmitting(false);
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back! Redirecting to dashboard...",
       });
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message || "Invalid credentials.",
+      });
+      setIsSubmitting(false);
+    }
   }
 
   async function handleSignupSubmit(values: z.infer<typeof signupSchema>) {
-    if (!auth) return;
+    if (!auth) {
+      toast({
+        variant: "destructive",
+        title: "Auth Error",
+        description: "Authentication service is not ready. Please try again in a moment.",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setSuccessMessage(null);
 
-    createUserWithEmailAndPassword(auth, values.email, values.password)
-      .then(async (userCredential) => {
-        if (userCredential.user) {
-          await updateProfile(userCredential.user, {
-            displayName: values.fullName
-          });
-        }
-        toast({
-          title: "Account Created Successfully",
-          description: "Your admin account is ready. Welcome to EduVault!",
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: values.fullName
         });
-        setSuccessMessage("Account created! Redirecting...");
-      })
-      .catch((error: any) => {
-        toast({
-          variant: "destructive",
-          title: "Signup Failed",
-          description: error.message || "An error occurred during registration.",
-        });
-        setIsSubmitting(false);
+      }
+      toast({
+        title: "Account Created Successfully",
+        description: "Your admin account is ready. Welcome to EduVault!",
       });
+      setSuccessMessage("Account created! Redirecting...");
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message || "An error occurred during registration.",
+      });
+      setIsSubmitting(false);
+    }
   }
 
   function handleForgotPassword() {
