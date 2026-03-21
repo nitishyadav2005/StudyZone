@@ -14,13 +14,11 @@ import {
   Card, 
   CardContent, 
   CardDescription, 
-  CardFooter, 
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { 
   Form, 
   FormControl, 
@@ -33,6 +31,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, Lock, Mail, User, ShieldCheck, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth, useUser, initiateEmailSignIn, initiateEmailSignUp } from "@/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -53,12 +52,14 @@ export default function AuthPage() {
   const router = useRouter();
   const { auth } = useAuth();
   const { user, isUserLoading } = useUser();
+  const { toast } = useToast();
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user && !isUserLoading) {
       router.push("/dashboard");
@@ -83,20 +84,50 @@ export default function AuthPage() {
     },
   });
 
-  function onLoginSubmit(values: z.infer<typeof loginSchema>) {
+  async function onLoginSubmit(values: z.infer<typeof loginSchema>) {
     if (!auth) return;
-    initiateEmailSignIn(auth, values.email, values.password);
-    setSuccessMessage("Login attempted. Redirecting...");
+    setIsSubmitting(true);
+    setSuccessMessage(null);
+    
+    try {
+      // initiateEmailSignIn is a non-blocking helper that triggers Auth state change
+      initiateEmailSignIn(auth, values.email, values.password);
+      setSuccessMessage("Login initiated. You will be redirected shortly.");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message || "An unexpected error occurred during login.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
-  function handleSignupSubmit(values: z.infer<typeof signupSchema>) {
+  async function handleSignupSubmit(values: z.infer<typeof signupSchema>) {
     if (!auth) return;
-    initiateEmailSignUp(auth, values.email, values.password);
-    setSuccessMessage("Account creation attempted. Redirecting...");
+    setIsSubmitting(true);
+    setSuccessMessage(null);
+
+    try {
+      initiateEmailSignUp(auth, values.email, values.password);
+      setSuccessMessage("Account creation initiated. You will be redirected shortly.");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: error.message || "An unexpected error occurred during signup.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function handleForgotPassword() {
-    alert("Password reset functionality placeholder popup triggered.");
+    toast({
+      title: "Password Reset",
+      description: "Password reset functionality will be available soon.",
+    });
   }
 
   if (isUserLoading) {
@@ -113,7 +144,7 @@ export default function AuthPage() {
         {successMessage && (
           <Alert className="mb-6 bg-primary/10 border-primary text-primary" suppressHydrationWarning>
             <CheckCircle2 className="h-4 w-4" />
-            <AlertTitle>Success</AlertTitle>
+            <AlertTitle>Action Initiated</AlertTitle>
             <AlertDescription>{successMessage}</AlertDescription>
           </Alert>
         )}
@@ -191,8 +222,8 @@ export default function AuthPage() {
                         Forgot Password?
                       </button>
                     </div>
-                    <Button type="submit" className="w-full font-bold h-11 bg-primary text-primary-foreground" suppressHydrationWarning>
-                      Login
+                    <Button type="submit" className="w-full font-bold h-11 bg-primary text-primary-foreground" disabled={isSubmitting} suppressHydrationWarning>
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Login"}
                     </Button>
                   </form>
                 </Form>
@@ -303,8 +334,8 @@ export default function AuthPage() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2" suppressHydrationWarning>
-                      Create Account
+                    <Button type="submit" className="w-full font-bold h-11 bg-secondary text-secondary-foreground mt-2" disabled={isSubmitting} suppressHydrationWarning>
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Create Account"}
                     </Button>
                   </form>
                 </Form>
