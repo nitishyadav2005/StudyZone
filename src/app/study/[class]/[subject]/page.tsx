@@ -46,7 +46,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { updateDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase/non-blocking-updates";
+import { deleteDocumentNonBlocking } from "@/firebase/non-blocking-updates";
 
 export default function SubjectDetailPage() {
   const params = useParams();
@@ -83,14 +83,14 @@ export default function SubjectDetailPage() {
     
     // Group materials by folder type
     const grouped = materials.reduce((acc, item) => {
-      // Map legacy types to current standard folders
-      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "General Resources");
+      // Map legacy "Notes" to "Ncert Solution" for consistency
+      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "Ncert Solution");
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
     }, {} as Record<string, typeof materials>);
 
-    // Sort items within each folder by title using natural numeric sorting
+    // Sort items within each folder by title using natural numeric sorting (Chapter 1, 2, 10, etc.)
     Object.keys(grouped).forEach(folder => {
       grouped[folder].sort((a, b) => 
         a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
@@ -119,7 +119,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType === "Notes" ? "Ncert Solution" : (material.materialType || "Ncert Solution")
+      folder: material.materialType || "Ncert Solution"
     });
     setIsDialogOpen(true);
   };
