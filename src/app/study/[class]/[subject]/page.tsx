@@ -62,7 +62,7 @@ export default function SubjectDetailPage() {
     title: "", 
     url: "", 
     description: "",
-    folder: "NCERT Book" 
+    folder: "Notes" 
   });
 
   const materialsQuery = useMemoFirebase(() => {
@@ -116,7 +116,7 @@ export default function SubjectDetailPage() {
           title: "Material Added Successfully",
           description: `${newMaterial.title} has been added to the '${newMaterial.folder}' folder.`,
         });
-        setNewMaterial({ title: "", url: "", description: "", folder: "NCERT Book" });
+        setNewMaterial({ title: "", url: "", description: "", folder: "Notes" });
         setIsDialogOpen(false);
       })
       .catch((error: any) => {
@@ -175,8 +175,8 @@ export default function SubjectDetailPage() {
                         <SelectValue placeholder="Select a folder" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="Notes">Notes</SelectItem>
                         <SelectItem value="NCERT Book">NCERT Book</SelectItem>
-                        <SelectItem value="Notes">Revision Notes</SelectItem>
                         <SelectItem value="PYQ">Previous Year Questions</SelectItem>
                         <SelectItem value="Mock Test">Mock Test</SelectItem>
                         <SelectItem value="Formula Sheet">Formula Sheet</SelectItem>
@@ -187,7 +187,7 @@ export default function SubjectDetailPage() {
                     <Label htmlFor="title">File Name / Title</Label>
                     <Input 
                       id="title" 
-                      placeholder="e.g., NCERT Book: Part 1" 
+                      placeholder="e.g., Chapter 1 Notes" 
                       value={newMaterial.title}
                       onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
                       required
@@ -291,7 +291,7 @@ export default function SubjectDetailPage() {
             <BookOpen className="w-8 h-8 text-muted-foreground" />
           </div>
           <h3 className="text-xl font-bold mb-2">No folders found</h3>
-          <p className="text-muted-foreground max-w-sm mx-auto mb-8">
+          <p className="text-muted-foreground max-sm mx-auto mb-8">
             This subject is currently empty. 
             {user ? " Click 'Add Material' to create your first folder and upload a PDF." : " Please login as admin to manage materials."}
           </p>
