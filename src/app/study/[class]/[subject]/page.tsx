@@ -64,7 +64,7 @@ export default function SubjectDetailPage() {
     title: "", 
     url: "", 
     description: "",
-    folder: "Notes" 
+    folder: "Ncert Solution" 
   });
 
   const materialsQuery = useMemoFirebase(() => {
@@ -81,7 +81,8 @@ export default function SubjectDetailPage() {
   const groupedMaterials = useMemo(() => {
     if (!materials) return {};
     return materials.reduce((acc, item) => {
-      const folder = item.materialType || "General";
+      // Handle legacy 'Notes' type by grouping them under 'Ncert Solution'
+      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "General");
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
@@ -92,7 +93,7 @@ export default function SubjectDetailPage() {
 
   const handleOpenAddDialog = () => {
     setEditingMaterial(null);
-    setNewMaterial({ title: "", url: "", description: "", folder: "Notes" });
+    setNewMaterial({ title: "", url: "", description: "", folder: "Ncert Solution" });
     setIsDialogOpen(true);
   };
 
@@ -102,7 +103,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType || "Notes"
+      folder: material.materialType === "Notes" ? "Ncert Solution" : (material.materialType || "Ncert Solution")
     });
     setIsDialogOpen(true);
   };
@@ -222,7 +223,7 @@ export default function SubjectDetailPage() {
                     <SelectValue placeholder="Select a folder" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Notes">Notes</SelectItem>
+                    <SelectItem value="Ncert Solution">Ncert Solution</SelectItem>
                     <SelectItem value="NCERT Book">NCERT Book</SelectItem>
                     <SelectItem value="PYQ">Previous Year Questions</SelectItem>
                     <SelectItem value="Mock Test">Mock Test</SelectItem>
@@ -234,7 +235,7 @@ export default function SubjectDetailPage() {
                 <Label htmlFor="title">File Name / Title</Label>
                 <Input 
                   id="title" 
-                  placeholder="e.g., Chapter 1 Notes" 
+                  placeholder="e.g., Chapter 1 Solution" 
                   value={newMaterial.title}
                   onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
                   required
