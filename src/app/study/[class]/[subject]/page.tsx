@@ -85,17 +85,26 @@ export default function SubjectDetailPage() {
     // Group materials by folder type
     const grouped = materials.reduce((acc, item) => {
       // Map legacy "Notes" to "Ncert Solution" for consistency
-      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "Ncert Solution");
+      let folder = item.materialType || "Ncert Solution";
+      if (folder === "Notes") folder = "Ncert Solution";
+      
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
     }, {} as Record<string, typeof materials>);
 
-    // Sort items within each folder using natural numeric sorting (Chapter 1, 2, 10, etc.)
+    // Robust Natural Sort function
+    const naturalSort = (a: string, b: string) => {
+      return a.localeCompare(b, undefined, { 
+        numeric: true, 
+        sensitivity: 'base',
+        ignorePunctuation: true 
+      });
+    };
+
+    // Sort items within each folder
     Object.keys(grouped).forEach(folder => {
-      grouped[folder].sort((a, b) => 
-        a.title.trim().localeCompare(b.title.trim(), undefined, { numeric: true, sensitivity: 'base' })
-      );
+      grouped[folder].sort((a, b) => naturalSort(a.title.trim(), b.title.trim()));
     });
 
     return grouped;
