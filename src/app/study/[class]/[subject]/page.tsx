@@ -62,7 +62,7 @@ export default function SubjectDetailPage() {
     title: "", 
     url: "", 
     description: "",
-    folder: "Notes" 
+    folder: "NCERT Book" 
   });
 
   const materialsQuery = useMemoFirebase(() => {
@@ -116,7 +116,7 @@ export default function SubjectDetailPage() {
           title: "Material Added Successfully",
           description: `${newMaterial.title} has been added to the '${newMaterial.folder}' folder.`,
         });
-        setNewMaterial({ title: "", url: "", description: "", folder: "Notes" });
+        setNewMaterial({ title: "", url: "", description: "", folder: "NCERT Book" });
         setIsDialogOpen(false);
       })
       .catch((error: any) => {
@@ -175,8 +175,8 @@ export default function SubjectDetailPage() {
                         <SelectValue placeholder="Select a folder" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Notes">Notes</SelectItem>
                         <SelectItem value="NCERT Book">NCERT Book</SelectItem>
+                        <SelectItem value="Notes">Revision Notes</SelectItem>
                         <SelectItem value="PYQ">Previous Year Questions</SelectItem>
                         <SelectItem value="Mock Test">Mock Test</SelectItem>
                         <SelectItem value="Formula Sheet">Formula Sheet</SelectItem>
