@@ -80,13 +80,24 @@ export default function SubjectDetailPage() {
 
   const groupedMaterials = useMemo(() => {
     if (!materials) return {};
-    return materials.reduce((acc, item) => {
+    
+    // Group materials by folder type
+    const grouped = materials.reduce((acc, item) => {
       // Handle legacy 'Notes' type by grouping them under 'Ncert Solution'
       const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "General");
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
     }, {} as Record<string, typeof materials>);
+
+    // Sort items within each folder by title using natural numeric sorting
+    Object.keys(grouped).forEach(folder => {
+      grouped[folder].sort((a, b) => 
+        a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+      );
+    });
+
+    return grouped;
   }, [materials]);
 
   const folders = Object.keys(groupedMaterials).sort();
