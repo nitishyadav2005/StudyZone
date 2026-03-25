@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -90,7 +91,7 @@ export default function SubjectDetailPage() {
       return acc;
     }, {} as Record<string, typeof materials>);
 
-    // Sort items within each folder by title using natural numeric sorting (Chapter 1, 2, 10, etc.)
+    // Sort items within each folder using natural numeric sorting (Chapter 1, 2, 10, etc.)
     Object.keys(grouped).forEach(folder => {
       grouped[folder].sort((a, b) => 
         a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
@@ -119,7 +120,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType || "Ncert Solution"
+      folder: material.materialType === "Notes" ? "Ncert Solution" : (material.materialType || "Ncert Solution")
     });
     setIsDialogOpen(true);
   };
