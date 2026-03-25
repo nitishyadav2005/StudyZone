@@ -70,9 +70,8 @@ service cloud.firestore {
 
     match /studyMaterials/{studyMaterialId} {
       allow get, list: if true;
-      // Gate creation behind authentication (admin mode)
-      allow create: if isSignedIn();
-      allow update, delete: if false; 
+      // Allow management for authenticated users (admins)
+      allow create, update, delete: if isSignedIn();
     }
 
     match /competitiveExams/{competitiveExamId} {
@@ -82,8 +81,8 @@ service cloud.firestore {
 
     match /competitiveExamMaterials/{competitiveExamMaterialId} {
       allow get, list: if true;
-      allow create: if isSignedIn();
-      allow update, delete: if false;
+      // Allow management for authenticated users (admins)
+      allow create, update, delete: if isSignedIn();
     }
 
     match /quizzes/{quizId} {
