@@ -94,7 +94,7 @@ export default function SubjectDetailPage() {
     // Sort items within each folder using natural numeric sorting (Chapter 1, 2, 10, etc.)
     Object.keys(grouped).forEach(folder => {
       grouped[folder].sort((a, b) => 
-        a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+        a.title.trim().localeCompare(b.title.trim(), undefined, { numeric: true, sensitivity: 'base' })
       );
     });
 
