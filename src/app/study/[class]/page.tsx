@@ -9,7 +9,7 @@ export default async function ClassStudyPage({ params }: { params: Promise<{ cla
   
   const isHigherSecondary = classParam === "class-11" || classParam === "class-12";
 
-  const subjects = isHigherSecondary ? [
+  const subjectsData = isHigherSecondary ? [
     { name: "Physics", icon: <Atom className="w-6 h-6" />, count: "14 Chapters", color: "text-blue-400", slug: "physics" },
     { name: "Chemistry", icon: <Beaker className="w-6 h-6" />, count: "12 Chapters", color: "text-orange-400", slug: "chemistry" },
     { name: "Mathematics", icon: <Calculator className="w-6 h-6" />, count: "15 Chapters", color: "text-blue-500", slug: "maths" },
@@ -20,6 +20,9 @@ export default async function ClassStudyPage({ params }: { params: Promise<{ cla
     { name: "Social Science", icon: <Globe className="w-6 h-6" />, count: "18 Chapters", color: "text-orange-500", slug: "social-science" },
     { name: "English", icon: <Languages className="w-6 h-6" />, count: "12 Chapters", color: "text-purple-500", slug: "english" },
   ];
+
+  // Sort subjects alphabetically for consistent navigation
+  const sortedSubjects = [...subjectsData].sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -35,7 +38,7 @@ export default async function ClassStudyPage({ params }: { params: Promise<{ cla
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {subjects.map((subject) => (
+        {sortedSubjects.map((subject) => (
           <Link key={subject.slug} href={`/study/${classParam}/${subject.slug}`}>
             <Card className="hover:border-primary transition-all duration-300 group overflow-hidden h-full bg-card">
               <CardHeader className="p-8 space-y-4">

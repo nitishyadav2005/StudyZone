@@ -83,8 +83,8 @@ export default function SubjectDetailPage() {
     
     // Group materials by folder type
     const grouped = materials.reduce((acc, item) => {
-      // Handle legacy 'Notes' type by grouping them under 'Ncert Solution'
-      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "General");
+      // Map legacy types to current standard folders
+      const folder = item.materialType === "Notes" ? "Ncert Solution" : (item.materialType || "General Resources");
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
@@ -100,7 +100,12 @@ export default function SubjectDetailPage() {
     return grouped;
   }, [materials]);
 
-  const folders = Object.keys(groupedMaterials).sort();
+  // Sort folders naturally as well
+  const folders = useMemo(() => {
+    return Object.keys(groupedMaterials).sort((a, b) => 
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    );
+  }, [groupedMaterials]);
 
   const handleOpenAddDialog = () => {
     setEditingMaterial(null);
