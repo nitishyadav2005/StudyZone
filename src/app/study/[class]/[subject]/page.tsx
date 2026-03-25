@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -65,7 +64,7 @@ export default function SubjectDetailPage() {
     title: "", 
     url: "", 
     description: "",
-    folder: "Notes" 
+    folder: "Ncert solution" 
   });
 
   const materialsQuery = useMemoFirebase(() => {
@@ -93,7 +92,7 @@ export default function SubjectDetailPage() {
 
   const handleOpenAddDialog = () => {
     setEditingMaterial(null);
-    setNewMaterial({ title: "", url: "", description: "", folder: "Notes" });
+    setNewMaterial({ title: "", url: "", description: "", folder: "Ncert solution" });
     setIsDialogOpen(true);
   };
 
@@ -103,7 +102,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType || "Notes"
+      folder: material.materialType || "Ncert solution"
     });
     setIsDialogOpen(true);
   };
@@ -223,7 +222,7 @@ export default function SubjectDetailPage() {
                     <SelectValue placeholder="Select a folder" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Notes">Notes</SelectItem>
+                    <SelectItem value="Ncert solution">Ncert solution</SelectItem>
                     <SelectItem value="NCERT Book">NCERT Book</SelectItem>
                     <SelectItem value="PYQ">Previous Year Questions</SelectItem>
                     <SelectItem value="Mock Test">Mock Test</SelectItem>
