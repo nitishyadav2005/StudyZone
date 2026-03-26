@@ -84,12 +84,15 @@ export default function SubjectDetailPage() {
     // Group materials by folder type
     const grouped = materials.reduce((acc, item) => {
       let folder = item.materialType || "Ncert Solution";
+      // Normalizing folder name if it was previously "Notes"
+      if (folder === "Notes") folder = "Ncert Solution";
+      
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
     }, {} as Record<string, typeof materials>);
 
-    // Natural Sort function: Correctly handles "Chapter 2" vs "Chapter 10"
+    // Robust Natural Sort function: Correctly handles "Chapter 2" vs "Chapter 10"
     const naturalSort = (a: string, b: string) => {
       return a.localeCompare(b, undefined, { 
         numeric: true, 
@@ -97,7 +100,7 @@ export default function SubjectDetailPage() {
       });
     };
 
-    // Sort items within each folder
+    // Sort items within each folder by title (Chapter 1, Chapter 2, etc.)
     Object.keys(grouped).forEach(folder => {
       grouped[folder].sort((a, b) => naturalSort(a.title.trim(), b.title.trim()));
     });
@@ -123,7 +126,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType || "Ncert Solution"
+      folder: (material.materialType === "Notes" ? "Ncert Solution" : material.materialType) || "Ncert Solution"
     });
     setIsDialogOpen(true);
   };
@@ -239,7 +242,6 @@ export default function SubjectDetailPage() {
                     <SelectItem value="Ncert Solution">Ncert Solution</SelectItem>
                     <SelectItem value="NCERT Book">NCERT Book</SelectItem>
                     <SelectItem value="PYQ">PYQ</SelectItem>
-                    <SelectItem value="Notes">Notes</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
