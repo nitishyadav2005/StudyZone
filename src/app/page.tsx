@@ -38,8 +38,8 @@ export default function Home() {
               Access the best-curated notes, solved previous year questions, and expert study materials designed to help you ace your exams.
             </p>
             <div className="flex flex-wrap gap-4 pt-4">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8">
-                Explore Notes
+              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold px-8" asChild>
+                <a href="#classes">Explore Notes</a>
               </Button>
             </div>
             <div className="flex items-center space-x-8 pt-8 text-sm font-medium text-muted-foreground">
@@ -71,10 +71,10 @@ export default function Home() {
       </section>
 
       {/* Class Quick Links */}
-      <section className="container mx-auto px-4">
+      <section id="classes" className="container mx-auto px-4 scroll-mt-20">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold font-headline">All Classes</h2>
-          <Link href="/study" className="text-primary text-sm font-bold flex items-center hover:underline">
+          <Link href="/study/class-10" className="text-primary text-sm font-bold flex items-center hover:underline">
             View All <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
@@ -144,11 +144,11 @@ export default function Home() {
                 Dedicated sections for JEE and NEET with high-yield notes, formula sheets, and full-length mock tests.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="bg-primary text-primary-foreground font-bold h-12 px-6">
-                  Explore JEE Materials
+                <Button className="bg-primary text-primary-foreground font-bold h-12 px-6" asChild>
+                  <Link href="/exams/jee">Explore JEE Materials</Link>
                 </Button>
-                <Button className="bg-secondary text-secondary-foreground font-bold h-12 px-6">
-                  Explore NEET Materials
+                <Button className="bg-secondary text-secondary-foreground font-bold h-12 px-6" asChild>
+                  <Link href="/exams/neet">Explore NEET Materials</Link>
                 </Button>
               </div>
             </div>
