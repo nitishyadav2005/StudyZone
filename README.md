@@ -1,22 +1,28 @@
 # Study Zone
 
-Study Zone is a comprehensive educational platform designed for CBSE Classes 9-12, JEE, and NEET aspirants. It provides curated NCERT solutions, study materials, and previous year questions (PYQs) in an organized, easy-to-navigate interface.
+Study Zone is a high-performance educational platform built with Next.js and Firebase, specifically designed for CBSE Classes 9-12, JEE, and NEET aspirants. It provides a structured and intuitive interface for accessing curated NCERT solutions, chapter-wise notes, and important previous year questions (PYQs).
 
-## Features
+## Core Features
 
-- **Class-wise Organization**: Dedicated sections for Class 9, 10, 11, and 12.
-- **Subject-wise Resources**: Materials categorized by Science, Math, Physics, Chemistry, Biology, etc.
-- **Natural Sorting**: Chapters and materials are automatically arranged in sequential order (Chapter 1, 2, 3...).
-- **Admin Management**: Secure dashboard for administrators to upload and manage PDFs and resources.
-- **Responsive Design**: Optimized for mobile and desktop learning.
+- **Class-wise Resources**: Dedicated sections for Class 9 through Class 12.
+- **Subject Specialization**: Categorized materials for Science, Mathematics, Physics, Chemistry, and Biology.
+- **Smart Sorting**: All materials and chapters are automatically arranged in natural numerical order (Chapter 1, 2, 3... 10, 11).
+- **Admin Dashboard**: Secure management interface for administrators to upload, edit, and organize study PDFs.
+- **Modern UI**: A sleek, dark-themed interface built with Tailwind CSS and ShadCN UI for a focused learning experience.
 
-## Tech Stack
+## Technical Architecture
 
-- **Framework**: Next.js (App Router)
-- **Styling**: Tailwind CSS & ShadCN UI
-- **Backend**: Firebase (Firestore & Authentication)
-- **AI Integration**: Genkit (Optional study guides)
+- **Frontend**: Next.js 15 (App Router), React 19
+- **Styling**: Tailwind CSS with custom neon-green and light-black theme
+- **Database**: Firebase Firestore (Real-time synchronization)
+- **Auth**: Firebase Authentication (Admin secure access)
+- **Deployment**: Optimized for Firebase App Hosting and GitHub integration
 
 ## Getting Started
 
-Visit the dashboard to manage materials or explore the class sections from the home page.
+1. **Authentication**: Login via the `/auth` page to access admin management features.
+2. **Management**: Use the Subject Detail pages to add or edit "Ncert Solution" folders and other categories.
+3. **Learning**: Navigate through the homepage to find your specific class and subject.
+
+---
+*Empowering students with verified study materials.*
