@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -16,6 +17,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+/**
+ * @fileOverview The main landing page for Study Zone.
+ */
 export default function Home() {
   const classes = [
     { name: "Class 9", icon: <BookOpen />, color: "text-blue-500", href: "/study/class-9" },
@@ -64,7 +68,7 @@ export default function Home() {
             <div className="relative glass-card p-4 rounded-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
               <Image 
                 src="https://picsum.photos/seed/edu1/600/400" 
-                alt="Study Zone" 
+                alt="Study Zone Application" 
                 width={600} 
                 height={400}
                 className="rounded-xl object-cover"

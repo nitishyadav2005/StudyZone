@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -93,6 +94,7 @@ export default function SubjectDetailPage() {
     }, {} as Record<string, typeof materials>);
 
     // Robust Natural Sort function: Correctly handles "Chapter 2" vs "Chapter 10"
+    // It extracts numbers from the string and compares them numerically.
     const naturalSort = (a: string, b: string) => {
       return a.localeCompare(b, undefined, { 
         numeric: true, 
@@ -109,6 +111,7 @@ export default function SubjectDetailPage() {
   }, [materials]);
 
   const folders = useMemo(() => {
+    // Also sort the folders themselves for consistency
     return Object.keys(groupedMaterials).sort((a, b) => 
       a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
     );
@@ -251,6 +254,7 @@ export default function SubjectDetailPage() {
                   id="title" 
                   value={newMaterial.title}
                   onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
+                  placeholder="e.g., Chapter 1: Introduction"
                   required
                 />
               </div>
@@ -261,6 +265,7 @@ export default function SubjectDetailPage() {
                   type="url"
                   value={newMaterial.url}
                   onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
+                  placeholder="https://example.com/file.pdf"
                   required
                 />
               </div>

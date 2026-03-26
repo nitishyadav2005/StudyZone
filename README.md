@@ -1,6 +1,7 @@
+
 # Study Zone
 
-Study Zone is a high-performance educational platform built with Next.js and Firebase, specifically designed for CBSE Classes 9-12, JEE, and NEET aspirants. It provides a structured and intuitive interface for accessing curated NCERT solutions, chapter-wise notes, and important previous year questions (PYQs).
+Study Zone is a professional educational platform built with Next.js and Firebase, specifically designed for CBSE Classes 9-12, JEE, and NEET aspirants. It provides a structured and intuitive interface for accessing curated NCERT solutions, chapter-wise notes, and important previous year questions (PYQs).
 
 ## Core Features
 
