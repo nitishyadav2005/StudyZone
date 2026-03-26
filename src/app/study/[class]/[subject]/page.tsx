@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -84,21 +83,17 @@ export default function SubjectDetailPage() {
     
     // Group materials by folder type
     const grouped = materials.reduce((acc, item) => {
-      // Map legacy "Notes" to "Ncert Solution" for consistency
       let folder = item.materialType || "Ncert Solution";
-      if (folder === "Notes") folder = "Ncert Solution";
-      
       if (!acc[folder]) acc[folder] = [];
       acc[folder].push(item);
       return acc;
     }, {} as Record<string, typeof materials>);
 
-    // Robust Natural Sort function
+    // Natural Sort function: Correctly handles "Chapter 2" vs "Chapter 10"
     const naturalSort = (a: string, b: string) => {
       return a.localeCompare(b, undefined, { 
         numeric: true, 
-        sensitivity: 'base',
-        ignorePunctuation: true 
+        sensitivity: 'base'
       });
     };
 
@@ -110,7 +105,6 @@ export default function SubjectDetailPage() {
     return grouped;
   }, [materials]);
 
-  // Sort folders naturally as well
   const folders = useMemo(() => {
     return Object.keys(groupedMaterials).sort((a, b) => 
       a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
@@ -129,7 +123,7 @@ export default function SubjectDetailPage() {
       title: material.title, 
       url: material.fileUrl, 
       description: material.description,
-      folder: material.materialType === "Notes" ? "Ncert Solution" : (material.materialType || "Ncert Solution")
+      folder: material.materialType || "Ncert Solution"
     });
     setIsDialogOpen(true);
   };
@@ -152,10 +146,10 @@ export default function SubjectDetailPage() {
 
       updateDoc(docRef, updateData)
         .then(() => {
-          toast({ title: "Material Updated", description: "Changes saved successfully." });
+          toast({ title: "Updated", description: "Resource updated successfully." });
           setIsDialogOpen(false);
         })
-        .catch((err) => {
+        .catch(() => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: docRef.path,
             operation: 'update',
@@ -169,7 +163,7 @@ export default function SubjectDetailPage() {
       const materialData = {
         id: newDocRef.id,
         title: newMaterial.title,
-        description: newMaterial.description || "No description provided.",
+        description: newMaterial.description || "Study material for " + subjectSlug,
         fileUrl: newMaterial.url,
         materialType: newMaterial.folder,
         classId: classSlug,
@@ -180,10 +174,10 @@ export default function SubjectDetailPage() {
 
       setDoc(newDocRef, materialData)
         .then(() => {
-          toast({ title: "Material Added", description: "Successfully added to the collection." });
+          toast({ title: "Added", description: "Resource added successfully." });
           setIsDialogOpen(false);
         })
-        .catch((err) => {
+        .catch(() => {
           errorEmitter.emit('permission-error', new FirestorePermissionError({
             path: newDocRef.path,
             operation: 'create',
@@ -198,7 +192,7 @@ export default function SubjectDetailPage() {
     if (!firestore) return;
     const docRef = doc(firestore, "studyMaterials", materialId);
     deleteDocumentNonBlocking(docRef);
-    toast({ title: "Material Deleted", description: "Resource has been removed." });
+    toast({ title: "Deleted", description: "Resource removed." });
   };
 
   const subjectName = subjectSlug ? subjectSlug.charAt(0).toUpperCase() + subjectSlug.slice(1) : "";
@@ -215,16 +209,12 @@ export default function SubjectDetailPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold font-headline">{subjectName} - {className}</h1>
-          <p className="text-muted-foreground">Browse organized study folders and resources.</p>
+          <p className="text-muted-foreground">Download NCERT Solutions and more.</p>
         </div>
 
-        {!isAuthLoading && user ? (
+        {!isAuthLoading && user && (
           <Button onClick={handleOpenAddDialog} className="bg-primary text-primary-foreground font-bold">
-            <Plus className="mr-2 h-4 w-4" /> Add Material
-          </Button>
-        ) : (
-          <Button variant="outline" className="opacity-50 cursor-not-allowed" disabled>
-            <Lock className="mr-2 h-4 w-4" /> Admin Access Required
+            <Plus className="mr-2 h-4 w-4" /> Add PDF
           </Button>
         )}
       </div>
@@ -232,36 +222,31 @@ export default function SubjectDetailPage() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>{editingMaterial ? "Edit Study Material" : "Add New Study Material"}</DialogTitle>
-            <DialogDescription>
-              {editingMaterial ? "Update the details for this resource." : "Choose a folder and enter the PDF details to upload."}
-            </DialogDescription>
+            <DialogTitle>{editingMaterial ? "Edit Material" : "Add Material"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSaveMaterial}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="folder">Folder / Category</Label>
+                <Label htmlFor="folder">Folder</Label>
                 <Select 
                   value={newMaterial.folder} 
                   onValueChange={(val) => setNewMaterial({ ...newMaterial, folder: val })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a folder" />
+                    <SelectValue placeholder="Select folder" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Ncert Solution">Ncert Solution</SelectItem>
                     <SelectItem value="NCERT Book">NCERT Book</SelectItem>
-                    <SelectItem value="PYQ">Previous Year Questions</SelectItem>
-                    <SelectItem value="Mock Test">Mock Test</SelectItem>
-                    <SelectItem value="Formula Sheet">Formula Sheet</SelectItem>
+                    <SelectItem value="PYQ">PYQ</SelectItem>
+                    <SelectItem value="Notes">Notes</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="title">File Name / Title</Label>
+                <Label htmlFor="title">Title (e.g., Chapter 1)</Label>
                 <Input 
                   id="title" 
-                  placeholder="e.g., Chapter 1 Solution" 
                   value={newMaterial.title}
                   onChange={(e) => setNewMaterial({ ...newMaterial, title: e.target.value })}
                   required
@@ -272,26 +257,15 @@ export default function SubjectDetailPage() {
                 <Input 
                   id="url" 
                   type="url"
-                  placeholder="https://example.com/file.pdf" 
                   value={newMaterial.url}
                   onChange={(e) => setNewMaterial({ ...newMaterial, url: e.target.value })}
                   required
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Input 
-                  id="description" 
-                  placeholder="Short summary..." 
-                  value={newMaterial.description}
-                  onChange={(e) => setNewMaterial({ ...newMaterial, description: e.target.value })}
-                />
-              </div>
             </div>
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-              <Button type="submit" disabled={isSaving || !newMaterial.title || !newMaterial.url}>
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Save Material"}
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : "Save"}
               </Button>
             </DialogFooter>
           </form>
@@ -299,58 +273,45 @@ export default function SubjectDetailPage() {
       </Dialog>
 
       {isDataLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 space-y-4">
-          <Loader2 className="w-10 h-10 text-primary animate-spin" />
-          <p className="text-muted-foreground font-medium">Loading resources...</p>
+        <div className="flex justify-center py-20">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
         </div>
       ) : folders.length > 0 ? (
         <Accordion type="multiple" defaultValue={[folders[0]]} className="space-y-4">
           {folders.map((folderName) => (
-            <AccordionItem key={folderName} value={folderName} className="border rounded-xl bg-card/30 overflow-hidden px-4">
+            <AccordionItem key={folderName} value={folderName} className="border rounded-xl bg-card/30 px-4">
               <AccordionTrigger className="hover:no-underline py-6">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                    <FolderOpen className="w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="text-lg font-bold">{folderName}</h3>
-                    <p className="text-xs text-muted-foreground">{groupedMaterials[folderName].length} items</p>
-                  </div>
+                  <FolderOpen className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-bold">{folderName}</span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="pb-6">
+              <AccordionContent>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
                   {groupedMaterials[folderName].map((item) => (
-                    <Card key={item.id} className="bg-card border-white/5 hover:border-primary/50 transition-all group">
+                    <Card key={item.id} className="bg-card border-white/5 hover:border-primary/50 transition-all">
                       <CardHeader className="p-4">
-                        <div className="flex items-start justify-between">
+                        <div className="flex justify-between items-start">
                           <FileText className="w-5 h-5 text-muted-foreground" />
                           {user && (
                             <div className="flex gap-1">
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary" onClick={() => handleOpenEditDialog(item)}>
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleOpenEditDialog(item)}>
                                 <Edit className="h-3.5 w-3.5" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive" onClick={() => handleDelete(item.id)}>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(item.id)}>
                                 <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </div>
                           )}
                         </div>
                         <CardTitle className="mt-2 text-base">{item.title}</CardTitle>
-                        <CardDescription className="line-clamp-1 text-xs">
-                          {item.description}
-                        </CardDescription>
                       </CardHeader>
-                      <CardFooter className="p-4 pt-0 flex gap-2">
-                        <Button variant="outline" size="sm" className="flex-1 text-[10px] h-8 font-bold" asChild>
-                          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="mr-1 h-3 w-3" /> View
-                          </a>
+                      <CardFooter className="p-4 pt-0 gap-2">
+                        <Button variant="outline" size="sm" className="flex-1 text-xs" asChild>
+                          <a href={item.fileUrl} target="_blank" rel="noopener noreferrer">View</a>
                         </Button>
-                        <Button variant="secondary" size="icon" className="shrink-0 h-8 w-8" asChild>
-                          <a href={item.fileUrl} download>
-                            <Download className="h-3.5 w-3.5" />
-                          </a>
+                        <Button variant="secondary" size="icon" className="h-8 w-8" asChild>
+                          <a href={item.fileUrl} download><Download className="h-4 w-4" /></a>
                         </Button>
                       </CardFooter>
                     </Card>
@@ -362,14 +323,9 @@ export default function SubjectDetailPage() {
         </Accordion>
       ) : (
         <div className="text-center py-24 bg-white/5 rounded-3xl border border-dashed border-white/10">
-          <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-            <BookOpen className="w-8 h-8 text-muted-foreground" />
-          </div>
-          <h3 className="text-xl font-bold mb-2">No folders found</h3>
-          <p className="text-muted-foreground max-sm mx-auto mb-8">
-            This subject is currently empty. 
-            {user ? " Click 'Add Material' to create your first folder and upload a PDF." : " Please login as admin to manage materials."}
-          </p>
+          <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-xl font-bold">No materials yet</h3>
+          {user && <p className="text-muted-foreground mt-2">Add your first PDF to get started.</p>}
         </div>
       )}
     </div>
